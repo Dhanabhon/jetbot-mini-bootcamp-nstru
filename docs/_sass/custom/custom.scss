@@ -1,0 +1,292 @@
+// JetBot Mini Bootcamp: "track manual" look, drawn from the competition field itself
+// (white vinyl grid, black line, green intersection marker, blue arrow sign).
+// Note: GitHub Pages compiles this with libsass, so avoid bare min()/max().
+
+body {
+  font-size-adjust: from-font; // keeps fallback text the same size while web fonts swap in
+  text-rendering: optimizelegibility;
+}
+
+::selection {
+  background: rgba($marker-green, 0.22);
+}
+
+:focus-visible {
+  outline: 3px solid $sign-blue;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+// ---------- Sidebar: the grid field ----------
+
+.side-bar {
+  background-color: $field;
+  background-image:
+    linear-gradient(rgba($ink, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba($ink, 0.045) 1px, transparent 1px);
+  background-size: 28px 28px;
+  border-right: 1px solid $rule;
+}
+
+.site-header {
+  border-bottom: 1px solid $rule;
+}
+
+.site-title {
+  gap: 0.6rem;
+  font-family: $heading-font-family;
+  font-size: 1.05rem !important;
+  font-weight: 700;
+  line-height: 1.25;
+  color: $ink;
+  letter-spacing: -0.005em;
+
+  // intersection marker
+  &::before {
+    content: "";
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    background: $marker-green;
+    box-shadow: 0 0 0 3px $ink;
+  }
+}
+
+.nav-list .nav-list-item .nav-list-link {
+  border-radius: 4px;
+  color: $nav-child-link-color;
+
+  &:hover {
+    color: $ink;
+    background-image: none;
+    background-color: rgba($ink, 0.05);
+  }
+
+  &.active {
+    color: $ink;
+    font-weight: 600;
+    background-image: none;
+    background-color: #ffffff;
+    box-shadow:
+      inset 3px 0 0 $marker-green,
+      0 1px 2px rgba($ink, 0.08);
+  }
+}
+
+// ---------- Top bar & search ----------
+
+.main-header {
+  background-color: rgba($paper, 0.92);
+  border-bottom: 1px solid $rule;
+}
+
+.search-input {
+  font-family: $body-font-family;
+}
+
+.search-input-wrap {
+  border-radius: 8px;
+}
+
+// ---------- Content typography ----------
+
+.main-content {
+  font-size: 1.0625rem;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: $heading-font-family;
+    color: $ink;
+    text-wrap: balance;
+  }
+
+  h1 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(2rem, 1.4rem + 2vw, 2.75rem) !important;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+
+    // a short stretch of black track under the page title
+    &::after {
+      content: "";
+      display: block;
+      width: 4.5rem;
+      height: 0.3rem;
+      margin-top: 0.9rem;
+      background: linear-gradient(90deg, $ink 0 72%, transparent 72% 80%, $marker-green 80%);
+    }
+  }
+
+  h2 {
+    margin-top: 2.75rem;
+    padding-top: 1.5rem;
+    padding-left: 1.05em; // hanging indent so wrapped lines align after the marker
+    text-indent: -1.05em;
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    border-top: 1px solid $rule;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 0.5em;
+      height: 0.5em;
+      margin-right: 0.55em;
+      vertical-align: 0.12em;
+      background: $marker-green;
+    }
+  }
+
+  h3 {
+    margin-top: 2rem;
+    font-size: 1.2rem !important;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1rem !important;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  // the page title's own rule replaces the border on a leading h2
+  h1 + h2,
+  h1 + p + h2 {
+    border-top: 0;
+  }
+
+  p,
+  li,
+  blockquote {
+    text-wrap: pretty;
+  }
+
+  strong {
+    font-weight: 600;
+    color: $ink;
+  }
+
+  a:not(.anchor-heading):not(.btn) {
+    color: $sign-blue;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba($sign-blue, 0.35);
+    text-underline-offset: 0.22em;
+
+    &:hover {
+      text-decoration-color: currentcolor;
+      text-decoration-thickness: 2px;
+    }
+  }
+
+  hr {
+    height: 0;
+    margin: 2.5rem 0;
+    background: none;
+    border: 0;
+    border-top: 2px dashed $rule;
+  }
+
+  // notes like "> ร่างลำดับไว้ก่อน" read as a road-sign panel
+  blockquote {
+    margin: 1.25rem 0;
+    padding: 0.85rem 1.1rem;
+    color: #2e323a;
+    background: rgba($sign-blue, 0.06);
+    border-left: 4px solid $sign-blue;
+    border-radius: 0 6px 6px 0;
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .task-list-item-checkbox {
+    accent-color: $marker-green;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: -0.15em;
+  }
+
+  .task-list-item {
+    &::before {
+      content: none;
+    }
+  }
+}
+
+// ---------- Code ----------
+
+:not(pre, figure) > code {
+  padding: 0.12em 0.38em;
+  font-size: 0.875em;
+  color: $ink;
+  background-color: #eceee6;
+  border: 0;
+  border-radius: 4px;
+}
+
+div.highlighter-rouge,
+div.listingblock > div.content,
+figure.highlight {
+  border: 1px solid $rule;
+  border-left: 3px solid $ink;
+  border-radius: 0 6px 6px 0;
+}
+
+pre.highlight code,
+figure.highlight pre code {
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+// ---------- Tables ----------
+
+.table-wrapper {
+  border: 1px solid $rule;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+th,
+td {
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9375rem !important;
+  line-height: 1.65;
+  vertical-align: top;
+  border-left: 0;
+}
+
+thead th {
+  font-family: $heading-font-family;
+  font-weight: 600;
+  color: $ink;
+  text-wrap: balance;
+  background-color: $field;
+  border-bottom: 2px solid $ink;
+}
+
+tbody tr:hover td {
+  background-color: #fcfcf9;
+}
+
+// ---------- Footer ----------
+
+.site-footer {
+  color: #5b616b;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav-list .nav-list-item .nav-list-link,
+  .main-content a {
+    transition:
+      background-color 150ms ease,
+      text-decoration-color 150ms ease;
+  }
+}

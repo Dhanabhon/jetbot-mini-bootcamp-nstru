@@ -1,0 +1,15 @@
+// Loaded after the theme's light scheme; only reassigns its variables (hex only: Sass color functions use them).
+$body-background-color: $paper;
+$body-heading-color: $ink;
+$body-text-color: #2e323a;
+$link-color: $sign-blue;
+$nav-child-link-color: #464b54;
+$sidebar-color: $field;
+$border-color: $rule;
+$base-button-color: #ffffff;
+$btn-primary-color: $sign-blue;
+$code-background-color: #f4f5f0;
+$feedback-color: darken($field, 3%);
+$table-background-color: #ffffff;
+$search-background-color: #ffffff;
+$search-result-preview-color: #464b54;
