@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model ที่เทรนแล้ว และไฟล์ขนาดใหญ่
+*.pth
+*.onnx
+*.engine
+*.trt
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

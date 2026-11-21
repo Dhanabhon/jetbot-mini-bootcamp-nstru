@@ -1,0 +1,72 @@
+# AI Vision Grand Prix: JetBot Mini Bootcamp @ NSTRU
+
+Bootcamp 6 ชั่วโมงสำหรับนักศึกษา มหาวิทยาลัยราชภัฏนครศรีธรรมราช (NSTRU)
+สอนเขียนโค้ดให้ Yahboom JetBot Mini เดินตามเส้นบนสนาม grid อ่านป้ายจราจร 3D Printed แล้วตัดสินใจเองที่ทางแยก
+จากนั้นแข่งขัน **Smart Grid Autonomous Delivery** แบบจับเวลาในอีกวันหนึ่ง
+
+## ภาพรวม
+
+| หัวข้อ | รายละเอียด |
+| :--- | :--- |
+| ผู้เข้าอบรม | 10 คน หุ่นยนต์คนละ 1 ตัว (แข่งแบบเดี่ยว) |
+| พื้นฐานที่ต้องมี | Python และ OpenCV เบื้องต้น |
+| วันอบรม | 1 วัน 6 ชั่วโมง (เช้า 3 ชั่วโมง, บ่าย 3 ชั่วโมง) |
+| วันแข่งขัน | 1 วัน แยกจากวันอบรม แข่งกันเองแบบเป็นกันเอง ไม่มีรางวัล |
+| ระหว่างสองวัน | นำหุ่นยนต์กลับไปพัฒนาโค้ดต่อเองได้ |
+| Platform | Yahboom JetBot Mini (NVIDIA Jetson Nano, กล้อง IMX219 77° FOV, จอ OLED) |
+| เครื่องมือ | Python, Jupyter Lab, OpenCV, PID Control, Edge AI (TensorRT / CNN) |
+| เป้าหมาย | ทุกคนมีโค้ดที่วิ่งจบภารกิจในสนามแข่งได้ด้วยตัวเอง |
+
+## เริ่มต้นใช้งาน
+
+1. เปิดหุ่นยนต์ แล้วอ่าน IP Address จากจอ OLED
+2. เปิด browser ไปที่ `http://<IP>:8888` เพื่อเข้า Jupyter Lab
+3. clone repo นี้ลงในหุ่นยนต์ แล้วเปิด notebook ตามลำดับใน `notebooks/`
+
+## Notebook แต่ละ Module
+
+| Notebook | Module | เวลา |
+| :--- | :--- | :--- |
+| `01_setup_first_trial.ipynb` | 1: System Architecture & First Trial | 09:00 – 09:45 |
+| `02_motor_control_calibration.ipynb` | 2: Differential Drive & Motor Trim | 09:45 – 10:30 |
+| `03_line_detection_opencv.ipynb` | 3: Line Detection ด้วย OpenCV | 10:30 – 11:15 |
+| `04_pid_line_following.ipynb` | 4: PID Control Tuning | 11:15 – 12:00 |
+| `05_traffic_sign_recognition.ipynb` | 5: Traffic Sign Recognition | 13:00 – 14:00 |
+| `06_fsm_mission_integration.ipynb` | 6: FSM & Mission Integration | 14:00 – 14:45 |
+| `07_competition_template.ipynb` | 7–8: Free Practice และโค้ดสำหรับวันแข่ง | 14:45 – 16:00 |
+
+Notebook ทุกไฟล์เป็นแบบเติมโค้ดในช่อง `TODO` ถ้าตามไม่ทัน ให้เปิดไฟล์เฉลยของ module นั้นใน `notebooks/solutions/` แล้วไปต่อได้เลย
+
+## โครงสร้าง Repository
+
+```text
+jetbot-mini-bootcamp-nstru/
+├── README.md
+├── docs/                    # เอกสารประกอบ
+│   ├── syllabus.md              # ตารางอบรม 6 ชั่วโมง
+│   ├── competition-rules.md     # โจทย์ กติกา และการคิด Net Time
+│   ├── sign-specs.md            # สเปกเสาป้ายจราจร 3D Printed
+│   ├── cheatsheet.md            # สรุปคำสั่งและวิธีแก้ปัญหาที่เจอบ่อย
+│   └── instructor-guide.md      # checklist และ run-of-show สำหรับผู้สอน
+├── notebooks/               # notebook สำหรับผู้เข้าอบรม (มีช่อง TODO)
+│   └── solutions/               # เฉลยและ checkpoint ของแต่ละ module
+├── jetbot_nstru/            # โค้ด Python ที่ใช้ร่วมกันหลาย notebook
+├── slides/                  # slide ประกอบการสอน
+├── competition/             # ใบบันทึกคะแนน และแผนผังวางป้าย
+│   └── layouts/
+├── dataset/signs/           # ภาพป้ายที่ถ่ายจากกล้องหุ่นยนต์จริง
+├── 3d_models/               # ไฟล์ .stl เสาป้ายจราจร
+└── stickers/                # ไฟล์ภาพป้ายสำหรับพิมพ์สติ๊กเกอร์
+```
+
+## เอกสาร
+
+- [ตารางอบรม](docs/syllabus.md)
+- [โจทย์และกติกาการแข่งขัน](docs/competition-rules.md)
+- [สเปกเสาป้ายจราจร](docs/sign-specs.md)
+- [Cheat sheet](docs/cheatsheet.md)
+- [คู่มือผู้สอน](docs/instructor-guide.md)
+
+## License
+
+ดูไฟล์ [LICENSE](LICENSE)
