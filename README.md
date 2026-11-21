@@ -17,11 +17,15 @@ Bootcamp 6 ชั่วโมงสำหรับนักศึกษา ม�
 | เครื่องมือ | Python, Jupyter Lab, OpenCV, PID Control, Edge AI (TensorRT / CNN) |
 | เป้าหมาย | ทุกคนมีโค้ดที่วิ่งจบภารกิจในสนามแข่งได้ด้วยตัวเอง |
 
+**คู่มือฉบับเว็บ:** <https://dhanabhon.github.io/jetbot-mini-bootcamp-nstru/>
+
 ## เริ่มต้นใช้งาน
 
+ครั้งแรกให้ทำตาม[คู่มือการเชื่อมต่อหุ่นยนต์](docs/setup/index.md) (รองรับ Windows และ macOS) หลังจากนั้น
+
 1. เปิดหุ่นยนต์ แล้วอ่าน IP Address จากจอ OLED
-2. เปิด browser ไปที่ `http://<IP>:8888` เพื่อเข้า Jupyter Lab
-3. clone repo นี้ลงในหุ่นยนต์ แล้วเปิด notebook ตามลำดับใน `notebooks/`
+2. เปิด Google Chrome ไปที่ `http://<IP>:8888` เพื่อเข้า Jupyter Lab (password `yahboom`)
+3. เปิด notebook ตามลำดับใน `notebooks/`
 
 ## Notebook แต่ละ Module
 
@@ -42,7 +46,8 @@ Notebook ทุกไฟล์เป็นแบบเติมโค้ดใ�
 ```text
 jetbot-mini-bootcamp-nstru/
 ├── README.md
-├── docs/                    # เอกสารประกอบ
+├── docs/                    # เอกสารประกอบ (เผยแพร่เป็น GitHub Pages)
+│   ├── setup/                   # คู่มือเชื่อมต่อหุ่นยนต์กับคอมพิวเตอร์
 │   ├── syllabus.md              # ตารางอบรม 6 ชั่วโมง
 │   ├── competition-rules.md     # โจทย์ กติกา และการคิด Net Time
 │   ├── sign-specs.md            # สเปกเสาป้ายจราจร 3D Printed
@@ -61,6 +66,7 @@ jetbot-mini-bootcamp-nstru/
 
 ## เอกสาร
 
+- [การเชื่อมต่อหุ่นยนต์](docs/setup/index.md)
 - [ตารางอบรม](docs/syllabus.md)
 - [โจทย์และกติกาการแข่งขัน](docs/competition-rules.md)
 - [สเปกเสาป้ายจราจร](docs/sign-specs.md)

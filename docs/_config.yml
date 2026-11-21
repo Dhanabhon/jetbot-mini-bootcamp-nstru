@@ -1,0 +1,12 @@
+title: JetBot Mini Bootcamp @ NSTRU
+description: คู่มืออบรม AI Vision Grand Prix ด้วย Yahboom JetBot Mini
+remote_theme: just-the-docs/just-the-docs
+plugins:
+  - jekyll-remote-theme
+lang: th
+search_enabled: true
+heading_anchors: true
+aux_links:
+  "GitHub":
+    - "https://github.com/Dhanabhon/jetbot-mini-bootcamp-nstru"
+footer_content: "JetBot Mini Bootcamp @ NSTRU"
