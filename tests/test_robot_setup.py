@@ -116,6 +116,12 @@ def test_nmcli_values_round_trip_the_settings_nmcli_prints_back():
     assert setup.nmcli_values(printed) == expected
 
 
+def test_jupyter_dropin_puts_the_folder_on_the_command_line():
+    lines = setup.jupyter_dropin().splitlines()
+    assert lines.index("ExecStart=") < lines.index(next(l for l in lines if "jupyter lab" in l))
+    assert "--notebook-dir=%s" % setup.REPO in lines[-1]  # beats notebook_dir in Yahboom's config
+
+
 def test_oled_lines_say_what_is_missing():
     assert status_display.status_lines("JETBOT-07", "pw", "10.42.0.1", True, 11.84) == [
         "JETBOT-07", "PW pw", "10.42.0.1:8888", "BAT 11.8V"]

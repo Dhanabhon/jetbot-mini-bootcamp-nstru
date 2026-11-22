@@ -64,7 +64,7 @@ sudo nvpmodel -m0       # เปลี่ยนเป็น MAXN
 
 ทีมงานคัดลอกโค้ดลงหุ่นยนต์ทุกตัวไว้แล้วที่ `~/jetbot-mini-bootcamp-nstru` ไม่ต้องดาวน์โหลดเพิ่ม และไม่ต้องใช้ internet
 
-1. ที่แถบไฟล์ด้านซ้ายของ Jupyter Lab เปิด folder `jetbot-mini-bootcamp-nstru` แล้วเข้า `notebooks`
+1. แถบไฟล์ด้านซ้ายของ Jupyter Lab เปิดที่ folder นี้ให้แล้ว ดับเบิลคลิกเข้า `notebooks`
 2. เปิด notebook ตาม Module ที่บรรยายอยู่ เริ่มที่ `01_setup_first_trial.ipynb`
 
 ถ้าไม่เห็น folder นี้ ให้แจ้งทีมงาน

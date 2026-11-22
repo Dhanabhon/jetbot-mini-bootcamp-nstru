@@ -130,8 +130,16 @@ def nmcli_values(output: str) -> list:
 
 
 def jupyter_dropin() -> str:
-    """systemd drop-in that opens Jupyter in the repo. Delete the file to get Yahboom's folder back."""
-    return "[Service]\nWorkingDirectory=%s\n" % REPO
+    """systemd drop-in that opens Jupyter in the repo. Delete the file to get Yahboom's folder back.
+
+    Yahboom's ~/.jupyter/jupyter_notebook_config.py sets notebook_dir to ~/Notebooks, which beats
+    WorkingDirectory, so the folder goes on the command line: that beats every config file.
+    The empty ExecStart= clears Yahboom's command before ours replaces it.
+    """
+    return (
+        "[Service]\nWorkingDirectory={repo}\nExecStart=\n"
+        'ExecStart=/bin/sh -c "jupyter lab --ip=0.0.0.0 --no-browser --notebook-dir={repo}"\n'
+    ).format(repo=REPO)
 
 
 def status_unit(user: str) -> str:
@@ -425,11 +433,6 @@ def step_jupyter(sh: Shell) -> bool:
     if not name:
         sh.say("  ✗ ไม่พบ service ของ Jupyter ที่เปิดตอน boot แจ้งทีมงาน")
         return False
-    for config in ("jupyter_notebook_config.py", "jupyter_lab_config.py"):
-        text = read_text(os.path.expanduser("~/.jupyter/" + config))
-        if re.search(r"^\s*c\.\w+\.(notebook_dir|root_dir)\s*=", text, flags=re.M):
-            sh.say("  ✗ ~/.jupyter/%s กำหนด folder ไว้เอง ค่าของขั้นนี้จะไม่มีผล แจ้งทีมงาน" % config)
-            return False
     path = "/etc/systemd/system/%s.service.d/nstru.conf" % name
     if read_text(path) == jupyter_dropin():
         sh.say("  ✓ %s เปิดที่ %s อยู่แล้ว" % (name, REPO))
