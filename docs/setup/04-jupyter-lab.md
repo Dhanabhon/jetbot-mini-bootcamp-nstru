@@ -1,45 +1,31 @@
 ---
-title: 4. เข้า Jupyter Lab
+title: 1. ใช้งาน Jupyter Lab
 parent: การเชื่อมต่อหุ่นยนต์
-nav_order: 4
+nav_order: 1
 ---
 
-# ขั้นที่ 4: เข้า Jupyter Lab และเตรียมพร้อมเขียนโค้ด
+# ขั้นที่ 1: ใช้งาน Jupyter Lab
+
+ทุกอย่างที่ต้องทำกับหุ่นยนต์ระหว่างอบรมทำใน Jupyter Lab ได้หมด ทั้งเขียนโค้ด สั่งคำสั่งใน Terminal ส่งไฟล์ และปิดเครื่อง ไม่ต้องใช้ SSH
 
 ## เปิด Jupyter Lab
 
-1. เปิด **Google Chrome** (Yahboom ระบุว่า browser อื่นใช้งานได้ไม่ดี หรือ login ไม่ได้)
-2. พิมพ์ที่ address bar โดยใช้ IP จากสติ๊กเกอร์ที่ตัวรถ หรือจอ OLED
+1. ต่อคอมพิวเตอร์เข้า Wi-Fi ของหุ่นยนต์ตัวเอง ชื่อตามบรรทัดแรกของจอ OLED เช่น `JETBOT-07`
+2. เปิด **Google Chrome** (Yahboom ระบุว่า browser อื่นใช้งานได้ไม่ดี หรือ login ไม่ได้) แล้วพิมพ์ที่ address bar
 
    ```text
-   http://192.168.0.101:8888
+   http://10.42.0.1:8888
    ```
 
 3. ใส่ password `yahboom`
 
-ถ้ายังต่อสาย USB อยู่ ใช้ `http://192.168.55.1:8888` แทนได้
+ถ้าต่อสาย USB ตาม[ทางสำรอง](02-usb-ssh.md)อยู่ ใช้ `http://192.168.55.1:8888` แทนได้
 
-## ปิดโปรแกรม APP ของ Yahboom ก่อนเขียนโค้ด
+## เปิด Terminal
 
-ถ้ารันโปรแกรมตั้งค่า `tools/robot_setup.py` ครบแล้ว ขั้นที่ 4 ของโปรแกรมปิดให้ถาวรแล้ว ข้ามหัวข้อนี้ได้ ทำตามด้านล่างเฉพาะหุ่นยนต์ที่ยังไม่ได้รันโปรแกรม
+เมนู **File > New > Terminal** จะได้ Terminal ของหุ่นยนต์ในแท็บใหม่ ใช้สั่งคำสั่ง Linux ได้เหมือน SSH ทุกอย่าง คำสั่งที่ขึ้นต้นด้วย `sudo` จะถาม password ให้ใส่ `yahboom`
 
-image ของ Yahboom เปิดโปรแกรมควบคุมผ่าน APP มือถือไว้ตั้งแต่ boot โปรแกรมนี้ใช้มอเตอร์และกล้องอยู่ ถ้าไม่ปิด โค้ดของเราจะแย่งอุปกรณ์กับมันและทำงานผิดปกติ
-
-เปิด Terminal ใน Jupyter Lab (เมนู **File > New > Terminal**) แล้วสั่ง
-
-```bash
-sudo systemctl stop jetbotmini_start
-```
-
-คำสั่งนี้ปิดเฉพาะรอบนี้ เปิดเครื่องใหม่โปรแกรมจะกลับมา ถ้าต้องการปิดถาวรตลอดช่วงอบรม ให้สั่ง
-
-```bash
-sudo systemctl disable jetbotmini_start
-```
-
-เปิดกลับคืนภายหลังได้ด้วย `sudo systemctl enable jetbotmini_start`
-
-### เมื่อโค้ดของเราต้องเขียนจอ OLED เอง
+## เมื่อโค้ดของเราต้องเขียนจอ OLED เอง
 
 จอ OLED มีโปรแกรมอีกตัวคอยแสดงชื่อ Wi-Fi และ IP อยู่ ถ้าโค้ดของเราจะเขียนข้อความลงจอ (เช่น แสดงชื่อป้ายใน Module 6) ต้องปิดตัวนี้ก่อน
 
@@ -49,7 +35,7 @@ sudo systemctl stop nstru_status jetbotmini_stats
 
 `nstru_status` คือตัวที่โปรแกรมตั้งค่าติดตั้งให้ ส่วน `jetbotmini_stats` คือตัวเดิมของ Yahboom สั่งปิดพร้อมกันได้เลย ตัวที่ไม่มีในเครื่องจะขึ้น `not loaded` ซึ่งไม่เป็นไร
 
-หลังปิดแล้วจอจะไม่แสดง IP อีก ให้จด IP ไว้ก่อนสั่ง ตัวแสดงผลจะกลับมาเองเมื่อเปิดเครื่องใหม่
+หลังปิดแล้วจอจะไม่แสดงชื่อ Wi-Fi และรหัสอีก คอมพิวเตอร์ที่ต่ออยู่แล้วใช้งานต่อได้ตามปกติ ตัวแสดงผลจะกลับมาเองเมื่อเปิดเครื่องใหม่
 
 ## ตรวจ power mode
 
@@ -80,11 +66,21 @@ git checkout -- notebooks/01_setup_first_trial.ipynb
 
 ปิด notebook นั้นใน Jupyter Lab ก่อนสั่ง แล้วเปิดใหม่หลังสั่ง ไม่อย่างนั้น Jupyter อาจบันทึกฉบับเก่าทับ
 
+## ปิดเครื่อง
+
+สั่งใน Terminal ของ Jupyter Lab แล้วรอจนไฟบนบอร์ด Jetson Nano ดับ จึงค่อยปิดสวิตช์ power หน้า Jupyter Lab จะหลุดไป เป็นเรื่องปกติ
+
+```bash
+sudo shutdown -h now
+```
+
+การปิดสวิตช์ทันทีโดยไม่ shutdown อาจทำให้กล้องเรียกใช้งานไม่ได้ในครั้งถัดไป
+
 ## ส่งไฟล์ระหว่างคอมพิวเตอร์กับหุ่นยนต์
 
 **ลากวางใน Jupyter Lab** ง่ายที่สุดสำหรับไฟล์ไม่กี่ไฟล์ ลากไฟล์จากคอมพิวเตอร์ไปวางที่แถบไฟล์ด้านซ้าย ส่วนการเอาไฟล์จากหุ่นยนต์กลับมา ให้คลิกขวาที่ไฟล์แล้วเลือก **Download**
 
-ถ้ามีไฟล์เยอะหรือทั้ง folder ใช้วิธีด้านล่าง
+ถ้ามีไฟล์เยอะหรือทั้ง folder ใช้วิธีด้านล่าง ซึ่งใช้ SSH อยู่เบื้องหลัง คอมพิวเตอร์ต้องต่อ Wi-Fi ของหุ่นยนต์อยู่
 
 <div data-os="windows" markdown="1">
 
@@ -95,7 +91,7 @@ git checkout -- notebooks/01_setup_first_trial.ipynb
 | ช่อง | ค่า |
 | :--- | :--- |
 | File protocol | SFTP |
-| Host name | IP ของหุ่นยนต์ |
+| Host name | `10.42.0.1` |
 | Port number | `22` |
 | User name / Password | `jetson` / `yahboom` |
 
@@ -107,10 +103,10 @@ git checkout -- notebooks/01_setup_first_trial.ipynb
 
 ```powershell
 # ส่งไฟล์ไปหุ่นยนต์ (ไฟล์อยู่ใน folder ที่ Terminal เปิดอยู่)
-scp .\my_robot.py jetson@192.168.0.101:~/
+scp .\my_robot.py jetson@10.42.0.1:~/
 
 # เอาไฟล์จากหุ่นยนต์มาไว้ที่ Downloads
-scp jetson@192.168.0.101:~/my_robot.py $HOME\Downloads\
+scp jetson@10.42.0.1:~/my_robot.py $HOME\Downloads\
 ```
 
 </div>
@@ -123,16 +119,16 @@ scp jetson@192.168.0.101:~/my_robot.py $HOME\Downloads\
 
 ```bash
 # ส่งไฟล์ไปหุ่นยนต์
-scp my_robot.py jetson@192.168.0.101:~/
+scp my_robot.py jetson@10.42.0.1:~/
 
 # เอาไฟล์จากหุ่นยนต์มาไว้ที่ Downloads
-scp jetson@192.168.0.101:~/my_robot.py ~/Downloads/
+scp jetson@10.42.0.1:~/my_robot.py ~/Downloads/
 ```
 
 พิมพ์ path ไม่ถูก ให้ลากไฟล์จาก Finder มาวางในหน้าต่าง Terminal ระบบจะใส่ path ให้เอง
 
 ### macOS: โปรแกรมแบบมีหน้าต่าง
 
-ใช้ [Cyberduck](https://cyberduck.io) (ฟรี) กด **Open Connection** เลือก **SFTP** แล้วใส่ Server เป็น IP ของหุ่นยนต์ Port `22` Username `jetson` Password `yahboom`
+ใช้ [Cyberduck](https://cyberduck.io) (ฟรี) กด **Open Connection** เลือก **SFTP** แล้วใส่ Server เป็น `10.42.0.1` Port `22` Username `jetson` Password `yahboom`
 
 </div>
