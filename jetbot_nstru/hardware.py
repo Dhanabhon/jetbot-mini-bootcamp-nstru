@@ -79,12 +79,15 @@ class CsiCamera:
 
 
 class Oled:
-    """128x32 SSD1306 on I2C bus 1, as used by the JetBot stats screen.
+    """128x32 SSD1306 on I2C bus 0 (address 0x3C), as used by the JetBot stats screen.
+
+    Confirmed on a JetBot Mini with `i2cdetect`: the OLED answers on bus 0, while the expansion
+    board MCU (0x1B) sits on bus 1.
 
     Run `sudo systemctl stop jetbotmini_stats` first, or the stats service overwrites the screen.
     """
 
-    def __init__(self, i2c_bus: int = 1, height: int = 32):
+    def __init__(self, i2c_bus: int = 0, height: int = 32):
         import Adafruit_SSD1306
         from PIL import Image, ImageDraw, ImageFont
 

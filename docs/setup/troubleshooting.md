@@ -54,6 +54,25 @@ umount /mnt
 - อย่าพิมพ์ `exit` ใน shell นี้ จะทำให้ kernel panic
 - ถ้าต้องย้อนกลับ ให้ `cp` ไฟล์ `extlinux.conf.bak` ทับไฟล์เดิม
 
+## boot เสร็จแล้ว (Buzzer ดัง 3 ครั้ง) แต่จอ OLED ว่าง
+{: #oled-blank }
+
+**สาเหตุที่พบบ่อย:** ไม่มี Wi-Fi interface `wlan0` เช่น ถอด USB Wi-Fi dongle ออก โปรแกรม `jetbotmini_stats` ที่แสดง IP บน OLED จะ crash แล้วเปิดใหม่วนไปเรื่อยๆ จอจึงว่าง ทั้งที่จอปกติ
+
+**ผู้เข้าอบรมทำได้:** ตรวจว่า USB Wi-Fi dongle เสียบอยู่ ภายในไม่กี่วินาทีหลังเสียบ OLED ควรแสดงข้อมูล ไม่ต้องรีสตาร์ตเครื่อง
+
+**สำหรับทีมงาน:** ถ้ายังว่าง ให้ตรวจตามลำดับ
+
+```bash
+ip link show wlan0
+journalctl -u jetbotmini_stats -n 30 --no-pager
+i2cdetect -y -r 0
+```
+
+- `ip link` ขึ้น `Device "wlan0" does not exist`: ระบบไม่เห็น Wi-Fi ให้ตรวจ dongle หรือการ์ด M.2
+- log ขึ้น `cat /sys/class/net/wlan0/operstate: No such file or directory`: เป็นสาเหตุเดียวกัน คือไม่มี `wlan0`
+- `i2cdetect -y -r 0` ไม่มี `3c` ในตาราง: บอร์ดมองไม่เห็นจอ OLED ให้ปิดเครื่องแล้วตรวจสาย 4 เส้นที่ช่อง OLED จอ OLED อยู่บน I2C bus **0** ส่วน `1b` บน bus 1 คือ chip บนบอร์ดขยาย
+
 ## เสียบ USB แล้วคอมพิวเตอร์ไม่เห็นหุ่นยนต์
 {: #usb-not-detected }
 
