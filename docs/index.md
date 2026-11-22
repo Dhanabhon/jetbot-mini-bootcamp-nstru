@@ -15,7 +15,7 @@ nav_order: 1
 | อยากรู้ว่าวันอบรมเรียนอะไรบ้าง | [ตารางอบรม](syllabus.md) |
 | อยากรู้โจทย์และกติกาวันแข่ง | [กติกาการแข่งขัน](competition-rules.md) |
 | ติดปัญหาระหว่างเขียนโค้ด | [Cheat sheet](cheatsheet.md) |
-| อยากดูสไลด์บรรยายย้อนหลัง | [ดาวน์โหลดสไลด์ (PDF 28 หน้า)]({{ '/assets/slides/jetbot-mini-bootcamp-lecture.pdf' | relative_url }}) |
+| อยากดูสไลด์บรรยายย้อนหลัง | [ดาวน์โหลดสไลด์ (PDF)]({{ '/assets/slides/jetbot-mini-bootcamp-lecture.pdf' | relative_url }}) |
 
 ## สิ่งที่ต้องเตรียมมาวันอบรม
 
