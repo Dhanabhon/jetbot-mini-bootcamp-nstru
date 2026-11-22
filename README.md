@@ -4,6 +4,10 @@ Bootcamp 6 ชั่วโมงสำหรับนักศึกษา ม�
 สอนเขียนโค้ดให้ Yahboom JetBot Mini เดินตามเส้นบนสนาม grid อ่านป้ายจราจร 3D Printed แล้วตัดสินใจเองที่ทางแยก
 จากนั้นแข่งขัน **Smart Grid Autonomous Delivery** แบบจับเวลาในอีกวันหนึ่ง
 
+[![คลิปจำลองการแข่งขัน: กดเพื่อเปิดวิดีโอ](docs/assets/video/jetbot-mission-poster.jpg)](https://dhanabhon.github.io/jetbot-mini-bootcamp-nstru/assets/video/jetbot-mission.mp4)
+
+*กดที่ภาพเพื่อดูคลิปจำลองการแข่งขัน (31 วินาที) แสดงมุมกล้อง จอ OLED และการคิด Net Time เส้นทางเป็นตัวอย่าง ไม่ใช่แผนผังแข่งจริง รายละเอียดอยู่ใน[โจทย์และกติกาการแข่งขัน](docs/competition-rules.md)*
+
 ## ภาพรวม
 
 | หัวข้อ | รายละเอียด |
