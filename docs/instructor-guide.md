@@ -78,7 +78,7 @@ dongle มีวิทยุตัวเดียว ขณะเป็น hotsp
 nmcli con up <ชื่อ Wi-Fi>
 ```
 
-เสร็จแล้วกลับเป็น hotspot ด้วย `sudo nmcli con up nstru-hotspot` หรือ reboot ในวันอบรมให้คัดลอก repo ด้วย flash drive แทน ตามหัวข้อถัดไป
+เสร็จแล้วกลับเป็น hotspot ด้วย `sudo nmcli con up nstru-hotspot` หรือ reboot (ขั้นตอนเต็มอยู่ที่[แก้ปัญหา](setup/troubleshooting.md#back-to-hotspot)) ในวันอบรมให้คัดลอก repo ด้วย flash drive แทน ตามหัวข้อถัดไป
 
 ## คัดลอก repo ลงหุ่นยนต์ด้วย flash drive
 {: #usb-copy }

@@ -150,11 +150,35 @@ ssh-keygen -R 192.168.55.1
 
 - ใช้ Google Chrome และพิมพ์ `http://` ไม่ใช่ `https://`
 - ตรวจว่าคอมพิวเตอร์ต่อ Wi-Fi ของหุ่นยนต์อยู่ ไม่ได้สลับไป Wi-Fi อื่น
+- ถ้าเพิ่งสั่งให้หุ่นยนต์ต่อ Wi-Fi อื่น (เช่น เพื่อ `git pull`) หุ่นยนต์จะปิด Wi-Fi ของตัวเองไปแล้ว ดู[หัวข้อถัดไป](#back-to-hotspot)
 - restart Jupyter Lab ผ่าน [SSH](02-usb-ssh.md) แล้วรอ 30 วินาทีก่อน refresh
 
   ```bash
   sudo systemctl restart nano_jupyter
   ```
+
+## สลับหุ่นยนต์ไป Wi-Fi ที่มี internet แล้ว Jupyter Lab หลุด
+{: #back-to-hotspot }
+
+Wi-Fi dongle ของหุ่นยนต์มีวิทยุตัวเดียว ต่อ Wi-Fi อื่นกับเปิด `JETBOT-NN` พร้อมกันไม่ได้ เมื่อสลับไป Wi-Fi ที่มี internet (เช่น เพื่อ `git pull`) `10.42.0.1` จึงหายไปด้วย เสร็จงานแล้วให้กลับมาเปิด Wi-Fi ของหุ่นยนต์ด้วยวิธีใดวิธีหนึ่ง
+
+- **ต่อจอ HDMI อยู่:** เปิด Terminal บน desktop ของหุ่นยนต์แล้วสั่ง (password ของ `sudo` คือ `yahboom`)
+
+  ```bash
+  sudo nmcli con up nstru-hotspot
+  ```
+
+- **ไม่มีจอ:** ปิดแล้วเปิดเครื่องใหม่ หุ่นยนต์จะเปิด Wi-Fi ของตัวเองก่อน Wi-Fi อื่นทุกครั้งที่ boot
+
+จากนั้นต่อคอมพิวเตอร์กลับเข้า `JETBOT-NN` (คอมพิวเตอร์อาจย้ายไปต่อ Wi-Fi อื่นเองระหว่างนั้น) แล้วเปิด `http://10.42.0.1:8888` อีกครั้ง
+
+ตรวจว่าหุ่นยนต์เปิด Wi-Fi ของตัวเองอยู่ไหม ถ้าเห็น `nstru-hotspot:wlan0` แปลว่าเปิดอยู่
+
+```bash
+nmcli -t -f NAME,DEVICE con show --active
+```
+
+ถ้าจะสลับไป Wi-Fi อื่นแค่ชั่วคราวแล้วกลับมา ให้สั่งจาก Terminal บนจอ HDMI ของหุ่นยนต์ ถ้าสั่งจาก Terminal ของ Jupyter Lab หน้า Jupyter จะหลุดทันที แล้วจะพิมพ์คำสั่งกลับไม่ได้ ต้องเปิดเครื่องใหม่อย่างเดียว
 
 ## กล้องไม่มีภาพ หรือภาพกะพริบใน Jupyter Lab
 
