@@ -19,6 +19,7 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
+from urllib.parse import urlsplit
 from typing import Callable, List, NamedTuple, Optional, Tuple
 
 import cv2
@@ -228,6 +229,15 @@ def _make_handler(server: MjpegServer):
         def do_POST(self):
             if server._on_post is None:
                 self.send_error(404)
+                return
+            # A JSON content type makes browsers send a CORS preflight, which this server never answers, and a
+            # foreign Origin is refused, so a page from another site cannot drive the robot.
+            if self.headers.get("Content-Type", "").split(";")[0].strip().lower() != "application/json":
+                self.send_error(415, "Content-Type must be application/json")
+                return
+            origin = self.headers.get("Origin")
+            if origin and urlsplit(origin).netloc != self.headers.get("Host"):
+                self.send_error(403, "cross-origin request refused")
                 return
             try:
                 length = int(self.headers.get("Content-Length", 0))

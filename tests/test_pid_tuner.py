@@ -106,4 +106,4 @@ def test_control_matches_the_notebook():
 def test_page_has_start_stop_and_heartbeat():
     page = tuner.PAGE.decode("utf-8")
     assert 'id="start"' in page and 'id="stop"' in page
-    assert '"/ping"' in page and "sendBeacon(\"/stop\"" in page
+    assert '"/ping"' in page and 'fetch("/stop", {method: "POST", keepalive: true' in page

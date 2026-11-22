@@ -56,8 +56,9 @@ def test_render_stacks_the_chosen_mask_under_the_frame(mask):
     assert out.shape == (240 + 240 - int(240 * 0.55), 320, 3)
 
 
-def _post(base, path, body):
-    request = urllib.request.Request(base + path, data=body, headers={"Content-Type": "application/json"})
+def _post(base, path, body, **headers):
+    headers.setdefault("Content-Type", "application/json")
+    request = urllib.request.Request(base + path, data=body, headers=headers)
     return urllib.request.urlopen(request, timeout=5)
 
 
@@ -79,3 +80,17 @@ def test_server_without_on_post_refuses_posts():
         with pytest.raises(urllib.error.HTTPError) as err:
             _post("http://127.0.0.1:{}".format(server.port), "/set", b"{}")
     assert err.value.code == 404
+
+
+def test_server_refuses_posts_a_foreign_page_could_send():
+    tuner = tuner_mod.Tuner(LineConfig(), save=lambda **kw: None)
+    with MjpegServer(port=0, page=tuner_mod.PAGE, on_post=tuner.handle) as server:
+        base = "http://127.0.0.1:{}".format(server.port)
+        cases = (({"Content-Type": "text/plain"}, 415),  # a form or sendBeacon from another site
+                 ({"Origin": "http://evil.example"}, 403))
+        for headers, code in cases:
+            with pytest.raises(urllib.error.HTTPError) as err:
+                _post(base, "/set", b'{"roi_top": 0.7}', **headers)
+            assert err.value.code == code
+        same_origin = _post(base, "/set", b'{"roi_top": 0.7}', Origin=base)
+        assert json.loads(same_origin.read())["roi_top"] == 0.7

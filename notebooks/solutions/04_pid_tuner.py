@@ -112,7 +112,8 @@ document.getElementById("stop").addEventListener("click", () => send("/stop"));
 document.addEventListener("keydown", e => { if (e.code === "Space") { e.preventDefault(); send("/stop"); } });
 document.getElementById("save").addEventListener("click", () =>
   send("/save").then(s => s && say(s.message, s.saved ? "ok" : "bad")));
-window.addEventListener("pagehide", () => navigator.sendBeacon("/stop", "{}"));
+window.addEventListener("pagehide", () =>  // keepalive lets the request finish after the tab closes
+  fetch("/stop", {method: "POST", keepalive: true, headers: {"Content-Type": "application/json"}, body: "{}"}));
 setInterval(() => send("/ping"), 300);
 setInterval(() => {
   document.getElementById("timer").textContent = ((startedAt !== null ? performance.now() - startedAt : lastRun) / 1000).toFixed(1) + " s";
