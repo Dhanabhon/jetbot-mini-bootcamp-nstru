@@ -14,6 +14,8 @@ then open http://10.42.0.1:8080 in Chrome. Each tab is one module:
     5 ป้าย          live sign reading with extent / balance, and photo capture for training
     6–7 ภารกิจ      the whole mission, watch-only mode, battery compensation, race_log.csv
 
+http://10.42.0.1:8080/live is a read-only screen for a projector: live camera, OLED copy, Net Time estimate.
+
 A value changed on one tab is used by the others right away; each tab's Save writes it to my_params.json,
 which the notebooks read too. Space stops the robot from any tab, and the motors also stop when the page
 closes or the laptop leaves the robot's Wi-Fi.

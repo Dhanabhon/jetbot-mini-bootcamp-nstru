@@ -173,15 +173,18 @@ class MjpegServer:
     """
 
     def __init__(self, port: int = 8080, max_fps: float = 10.0, quality: int = 70, page: bytes = _PAGE,
-                 on_post: Optional[Callable[[str, dict], Optional[dict]]] = None):
+                 on_post: Optional[Callable[[str, dict], Optional[dict]]] = None,
+                 on_get: Optional[Callable[[str], Optional[Tuple[str, bytes]]]] = None):
         """on_post(path, data) gets each POSTed JSON object and returns the JSON reply,
-        None for an unknown path (404), or raises ValueError/TypeError for bad input (400)."""
+        None for an unknown path (404), or raises ValueError/TypeError for bad input (400).
+        on_get(path) serves extra read-only GET paths as (content_type, body), or None for 404."""
         if max_fps <= 0:
             raise ValueError("max_fps must be positive, got {}".format(max_fps))
         self._min_interval = 1.0 / max_fps
         self._quality = quality
         self._page = page
         self._on_post = on_post
+        self._on_get = on_get
         self._jpeg = None  # type: Optional[bytes]
         self._last_push = float("-inf")
         self._stopped = False
@@ -246,12 +249,17 @@ def _make_handler(server: MjpegServer):
         def do_GET(self):
             if self._foreign_host():
                 return
-            if self.path == "/":
+            path = urlsplit(self.path).path  # a page may add ?t=... to reopen the stream
+            if path == "/":
                 self._send(200, "text/html; charset=utf-8", server._page)
-            elif self.path == "/stream":
+            elif path == "/stream":
                 self._stream()
             else:
-                self.send_error(404)
+                reply = server._on_get(path) if server._on_get is not None else None
+                if reply is None:
+                    self.send_error(404)
+                else:
+                    self._send(200, *reply)
 
         def do_POST(self):
             if self._foreign_host():

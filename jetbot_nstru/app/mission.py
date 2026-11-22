@@ -53,19 +53,23 @@ def compensate(speed, voltage, reference_voltage):
     return speed * battery_scale(voltage, reference_voltage)
 
 
-def estimate_bonus(events):
-    """Seconds of bonus the run probably earned: sign shown 2 s each, STOP_WAIT 2 s, PARKED 3 s."""
-    bonus = 0.0
+def bonus_parts(events):
+    """What the run did that earns a bonus: signs shown on the OLED, STOP waits, and whether it parked."""
+    signs = stops = 0
+    parked = False
     previous_mode = None
     for _, mode, display in events:
-        if display in SIGN_NAMES:
-            bonus += 2
-        if display == "PARKED":
-            bonus += 3
-        if mode == STOP_WAIT and previous_mode != STOP_WAIT:
-            bonus += 2
+        signs += display in SIGN_NAMES
+        parked = parked or display == "PARKED"
+        stops += mode == STOP_WAIT and previous_mode != STOP_WAIT
         previous_mode = mode
-    return bonus
+    return {"signs": signs, "stops": stops, "parked": parked}
+
+
+def estimate_bonus(events):
+    """Seconds of bonus the run probably earned: sign shown 2 s each, STOP_WAIT 2 s, PARKED 3 s."""
+    parts = bonus_parts(events)
+    return 2.0 * parts["signs"] + 2.0 * parts["stops"] + 3.0 * parts["parked"]
 
 
 def append_log(path, row):
@@ -289,4 +293,5 @@ $("mission_save").addEventListener("click", () => act("save"));
         events = ["{:5.1f}s  {:14s} {}".format(t, mode, display or "") for t, mode, display in self.events[-SHOWN_EVENTS:]]
         return dict(self.settings, running=self.running, watch_only=self.watch_only, compensate=self.compensate,
                     mode=self.run_state.mode, pending=self.run_state.pending, elapsed=round(self.elapsed, 1),
-                    events=events, result=self.result, message=self.message, level=self.level)
+                    events=events, result=self.result, message=self.message, level=self.level,
+                    bonus=bonus_parts(self.events))

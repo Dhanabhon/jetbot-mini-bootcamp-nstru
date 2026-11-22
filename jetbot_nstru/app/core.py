@@ -20,6 +20,7 @@ from ..line import LineConfig
 from ..params import PARAMS_PATH, load_params, save_params
 from ..pid import MotorTrim
 from ..viz import MjpegServer
+from .live import live_routes
 
 HEARTBEAT_TIMEOUT = 1.5  # s without a request from the page before the motors stop
 BATTERY_EVERY = 2.0  # s between battery reads; I2C is slow and the value changes slowly
@@ -42,6 +43,7 @@ class Context:
         self.line = LineConfig()._replace(**{k: params[k] for k in ("roi_top", "black_v_max") if k in params})
         self.pid = dict(PID_DEFAULTS, **{k: params[k] for k in PID_DEFAULTS if k in params})
         self.battery_error = ""
+        self.oled_text = ""  # last text sent to the OLED, shown on the /live page even without a screen
         self._read_battery = battery
         self._beep = beep
         self._battery = (None, float("-inf"))
@@ -63,6 +65,7 @@ class Context:
 
     def show(self, text, big=True):
         """Write to the OLED if there is one. The status service may overwrite it, see run()'s hint."""
+        self.oled_text = text
         if self.oled is None:
             return
         try:
@@ -173,6 +176,18 @@ class App:
         picture, motors = panel.step(frame, now, fps)
         return picture, None if quiet else motors
 
+    def live(self):
+        """Read-only snapshot for the /live page. Never counts as the control page's heartbeat, so a projector
+        left open cannot keep the robot driving after the control page is gone."""
+        with self._lock:
+            active = self.active
+            connected = self._clock() - self._last_seen <= HEARTBEAT_TIMEOUT
+        mission = self.panels.get("mission")
+        ctx = self.ctx
+        return {"active": self.panels[active].title, "connected": connected,
+                "battery": ctx.battery() if ctx is not None else None, "oled": ctx.oled_text if ctx is not None else "",
+                "mission": mission.state() if mission is not None else None}
+
     def _reply(self, name):
         battery = self.ctx.battery() if self.ctx is not None else None
         return {"active": name, "state": self.panels[name].state(), "battery": battery}
@@ -198,6 +213,7 @@ PAGE_HEAD = """<!doctype html><meta charset="utf-8">
   header { max-width:960px; margin:0 auto; padding:12px 16px 0; display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; }
   header h1 { font-size:17px; margin:0; flex:1 1 auto; }
   #batt { color:var(--muted); font-variant-numeric:tabular-nums; }
+  a.live { color:var(--muted); font-size:13px; } a.live:hover, a.live:focus-visible { color:var(--text); }
   nav { width:100%; display:flex; gap:4px; overflow-x:auto; border-bottom:1px solid var(--line); }
   nav button { background:none; color:var(--muted); border-radius:6px 6px 0 0; padding:8px 12px; white-space:nowrap; }
   nav button[aria-selected=true] { color:var(--text); background:var(--panel); box-shadow:inset 0 -2px var(--accent); }
@@ -294,7 +310,8 @@ def build_page(title, panels):
                 p.name, "true" if i == 0 else "false", p.title) for i, p in enumerate(panels)))
     sections = "".join('<section data-panel="{}"{}>{}</section>'.format(p.name, "" if i == 0 else " hidden", p.controls)
                        for i, p in enumerate(panels))
-    body = ('<header><h1>{title}</h1><span id="batt"></span>{tabs}</header>'
+    body = ('<header><h1>{title}</h1><a class="live" href="/live" target="_blank" rel="noopener">จอแสดงผล ↗</a>'
+            '<span id="batt"></span>{tabs}</header>'
             '<main><img src="/stream" alt="ภาพจากกล้องของหุ่นยนต์ พร้อมสิ่งที่โค้ดเห็น">'
             '<div class="side">{sections}<p id="msg" aria-live="polite"></p></div></main>').format(
         title=title, tabs=tabs, sections=sections)
@@ -336,7 +353,8 @@ def run(panel_types, title, argv=None, options=None):
     panels = [cls(ctx, **options.get(cls.name, {})) for cls in panel_types]
     app = App(panels, ctx)
     try:
-        server = MjpegServer(port=args.port, page=build_page(title, panels), on_post=app.handle)
+        server = MjpegServer(port=args.port, page=build_page(title, panels), on_post=app.handle,
+                             on_get=live_routes(app, title))
     except OSError as exc:
         sys.exit("เปิด port {} ไม่ได้ ({}) ปิด kernel ของ notebook ทุกตัว หรือใช้ --port 8081".format(args.port, exc))
     try:
@@ -346,6 +364,7 @@ def run(panel_types, title, argv=None, options=None):
         sys.exit("{}\n{}".format(exc, CAMERA_HINT))
 
     print("เปิด http://10.42.0.1:{} ใน Chrome  (กด Ctrl+C เพื่อจบโปรแกรม)".format(server.port))
+    print("จอแสดงผลสำหรับโปรเจกเตอร์ (ดูอย่างเดียว): http://10.42.0.1:{}/live".format(server.port))
     print("ค่าที่โหลดจาก {}: {}".format(PARAMS_PATH, ctx.params or "(ยังไม่มี ใช้ค่าเริ่มต้น)"))
     if ctx.oled is not None:
         print("ถ้าจอ OLED ถูกเขียนทับ สั่ง sudo systemctl stop nstru_status jetbotmini_stats ก่อน")

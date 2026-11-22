@@ -1,7 +1,10 @@
 """The browser app: routing, safety stops, settings shared between tabs, and the Module 1, 2 and 6-7 panels."""
 import csv
 import importlib.util
+import json
 import os
+import urllib.error
+import urllib.request
 
 import numpy as np
 import pytest
@@ -9,13 +12,15 @@ import pytest
 from jetbot_nstru.app import PANEL_TYPES
 from jetbot_nstru.app.check import CheckPanel, battery_percent
 from jetbot_nstru.app.core import HEARTBEAT_TIMEOUT, App, Context, TimedDrive, build_page, drive
-from jetbot_nstru.app.mission import (LOG_COLUMNS, LOST_LINE_STOP, MissionPanel, compensate, estimate_bonus,
-                                      motors_for, observe)
+from jetbot_nstru.app.live import live_routes
+from jetbot_nstru.app.mission import (LOG_COLUMNS, LOST_LINE_STOP, MissionPanel, bonus_parts, compensate,
+                                      estimate_bonus, motors_for, observe)
 from jetbot_nstru.app.pid import PidPanel
 from jetbot_nstru.app.trim import TrimPanel, adjust_trim
 from jetbot_nstru.fsm import Command
 from jetbot_nstru.pid import MotorTrim, mix_motors
 from jetbot_nstru.signs import SignVoter
+from jetbot_nstru.viz import MjpegServer
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOLUTIONS = os.path.join(ROOT, "notebooks", "solutions")
@@ -142,6 +147,7 @@ def test_page_has_a_tab_and_section_per_panel():
         assert 'data-panel="{}"'.format(panel.name) in page and panel.title in page
     assert page.count("<section") == len(panels) and "<nav" in page
     assert '"/halt"' in page and "keepalive: true" in page  # Space and closing the tab stop the robot
+    assert 'href="/live"' in page
 
 
 @pytest.mark.parametrize("name", sorted(f for f in os.listdir(SOLUTIONS) if f.endswith(".py")))
@@ -234,6 +240,7 @@ def test_compensate_and_bonus_match_the_notebook():
     sample = [(1.2, "FOLLOW", "STOP"), (2.0, "STOP_WAIT", None), (5.2, "CROSS", None),
               (8.0, "FOLLOW", "PARKING"), (9.5, "PARK_APPROACH", None), (11.0, "DONE", "PARKED")]
     assert estimate_bonus(sample) == 9 and estimate_bonus([]) == 0
+    assert bonus_parts(sample) == {"signs": 2, "stops": 1, "parked": True}
 
 
 def test_observe_and_motors_for_match_the_notebook():
@@ -296,3 +303,56 @@ def test_mission_settings_validate_and_save_with_the_battery_reference(tmp_path)
             panel.handle("/set", bad)
     assert panel.handle("/save", {})["saved"] is True
     assert saved == {"cross_time": 1.0, "turn_speed": 0.35, "cooldown": 1.0, "reference_voltage": 11.4}
+
+
+# ---- /live page -------------------------------------------------------------------------------------------
+
+
+def test_context_remembers_the_oled_text_even_without_a_screen():
+    ctx, _ = make_ctx()
+    ctx.show("STOP")
+    assert ctx.oled_text == "STOP"
+
+
+def test_live_view_never_keeps_the_robot_driving(tmp_path):
+    ctx, clock = make_ctx()
+    app = App([TrimPanel(ctx), MissionPanel(ctx, log_path=str(tmp_path / "log.csv"))], ctx, clock=clock)
+    app.handle("/trim/set", {"seconds": 4})
+    app.handle("/trim/run", {})
+    assert app.live()["connected"] is True
+    for _ in range(5):  # a projector polling /live after the control page closed
+        clock.now += 0.5
+        live = app.live()
+    assert live["connected"] is False
+    assert app.step(BLANK, clock.now, 30.0)[1] is None
+    assert live["active"] == "2 Trim" and live["battery"] == 12.0 and live["mission"]["bonus"]["signs"] == 0
+
+
+def test_live_routes_serve_a_read_only_page_and_state(tmp_path):
+    ctx, clock = make_ctx()
+    app = App([MissionPanel(ctx, log_path=str(tmp_path / "log.csv"))], ctx, clock=clock)
+    on_get = live_routes(app, "วันแข่ง <7>", robot_name="jetbot-99")
+    content_type, page = on_get("/live")
+    page = page.decode("utf-8")
+    assert content_type.startswith("text/html") and "วันแข่ง &lt;7&gt;" in page and "jetbot-99" in page
+    assert '"/live/state"' in page and 'src="/stream"' in page
+    assert "POST" not in page and "/ping" not in page  # it must not count as the control page
+    ctx.show("GO")
+    state = json.loads(on_get("/live/state")[1].decode("utf-8"))
+    assert state["oled"] == "GO" and state["mission"]["running"] is False
+    assert on_get("/nope") is None
+
+
+def test_server_serves_live_paths_and_still_checks_the_host(tmp_path):
+    ctx, clock = make_ctx()
+    app = App([CheckPanel(ctx)], ctx, clock=clock)
+    with MjpegServer(port=0, page=b"<p>app</p>", on_post=app.handle, on_get=live_routes(app, "t", "r")) as server:
+        base = "http://127.0.0.1:{}".format(server.port)
+        assert b"/live/state" in urllib.request.urlopen(base + "/live?t=1", timeout=5).read()
+        state = json.loads(urllib.request.urlopen(base + "/live/state", timeout=5).read().decode("utf-8"))
+        assert state["mission"] is None and state["active"] == "1 ตรวจเครื่อง"
+        for request, code in ((urllib.request.Request(base + "/nope"), 404),
+                              (urllib.request.Request(base + "/live/state", headers={"Host": "evil.example"}), 403)):
+            with pytest.raises(urllib.error.HTTPError) as err:
+                urllib.request.urlopen(request, timeout=5)
+            assert err.value.code == code
