@@ -94,3 +94,24 @@ def test_server_refuses_posts_a_foreign_page_could_send():
             assert err.value.code == code
         same_origin = _post(base, "/set", b'{"roi_top": 0.7}', Origin=base)
         assert json.loads(same_origin.read())["roi_top"] == 0.7
+
+
+@pytest.mark.parametrize("host,ok", [("10.42.0.1:8080", True), ("127.0.0.1", True), ("[::1]:8080", True),
+                                     ("localhost:8080", True), ("evil.example:8080", False), ("", False), (None, False)])
+def test_host_allowed_only_names_the_robot_itself(host, ok):
+    from jetbot_nstru.viz import host_allowed
+    assert host_allowed(host) is ok
+
+
+def test_server_refuses_a_rebound_domain_on_every_request():
+    tuner = tuner_mod.Tuner(LineConfig(), save=lambda **kw: None)
+    with MjpegServer(port=0, page=tuner_mod.PAGE, on_post=tuner.handle) as server:
+        base = "http://127.0.0.1:{}".format(server.port)
+        rebound = {"Host": "evil.example:{}".format(server.port), "Origin": "http://evil.example:{}".format(server.port)}
+        for request in (urllib.request.Request(base + "/", headers=rebound),
+                        urllib.request.Request(base + "/set", data=b'{"roi_top": 0.7}',
+                                               headers=dict(rebound, **{"Content-Type": "application/json"}))):
+            with pytest.raises(urllib.error.HTTPError) as err:
+                urllib.request.urlopen(request, timeout=5)
+            assert err.value.code == 403
+        assert tuner.handle("/set", {})["roi_top"] == 0.55  # the rebound POST changed nothing

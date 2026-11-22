@@ -14,7 +14,9 @@ Browser (robot driving):
 A tool can serve its own page and take JSON from it with page= and on_post=
 (see notebooks/solutions/03_line_tuner.py).
 """
+import ipaddress
 import json
+import socket
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -141,6 +143,23 @@ _PAGE = b"""<!doctype html><meta charset="utf-8">
 </body>"""
 
 
+def host_allowed(host: Optional[str]) -> bool:
+    """True if the Host header names this robot by IP address, localhost or its own hostname.
+
+    DNS rebinding points an attacker's domain at 10.42.0.1, so the browser treats that page as the same origin
+    as the tuner. Its requests still carry the attacker's domain in Host, and that is what this refuses.
+    """
+    name = urlsplit("//" + (host or "")).hostname
+    if not name:
+        return False
+    try:
+        ipaddress.ip_address(name)
+        return True
+    except ValueError:
+        own = socket.gethostname().lower()
+        return name.lower() in ("localhost", own, own + ".local")
+
+
 class _ThreadingServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True  # a viewer left open must not keep the kernel alive
     allow_reuse_address = True  # re-running the notebook cell can rebind the port
@@ -218,7 +237,15 @@ def _make_handler(server: MjpegServer):
         def log_message(self, *args):
             pass  # keep notebook output clean
 
+        def _foreign_host(self) -> bool:
+            if host_allowed(self.headers.get("Host")):
+                return False
+            self.send_error(403, "unknown Host, open the page by the robot's IP address")
+            return True
+
         def do_GET(self):
+            if self._foreign_host():
+                return
             if self.path == "/":
                 self._send(200, "text/html; charset=utf-8", server._page)
             elif self.path == "/stream":
@@ -227,6 +254,8 @@ def _make_handler(server: MjpegServer):
                 self.send_error(404)
 
         def do_POST(self):
+            if self._foreign_host():
+                return
             if server._on_post is None:
                 self.send_error(404)
                 return
