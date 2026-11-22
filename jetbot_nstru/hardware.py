@@ -132,21 +132,34 @@ def read_battery_voltage() -> float:
     return ((high << 8) + low) * BATTERY_SCALE
 
 
+BUZZER_REGISTER = 0x06  # Yahboom's own app (yahboom-jetbotmini.py) writes 1 = on, 0 = off here
+
 _buzzer_warned = []  # non-empty once the missing-buzzer warning has been logged
 
 
-def beep(robot, duration: float = 0.1) -> bool:
-    """Sound the buzzer without blocking the control loop. Returns False if the robot has none.
+def set_buzzer(on: bool) -> None:
+    """Switch the expansion-board buzzer on or off. Yahboom's Robot class has no buzzer attribute."""
+    import smbus
 
-    VERIFY ON ROBOT: the Yahboom driver's buzzer attribute. Until confirmed, a missing buzzer is
+    bus = smbus.SMBus(BATTERY_I2C_BUS)
+    try:
+        bus.write_byte_data(BATTERY_I2C_ADDRESS, BUZZER_REGISTER, 1 if on else 0)
+    finally:
+        bus.close()
+
+
+def beep(robot=None, duration: float = 0.1) -> bool:
+    """Sound the buzzer without blocking the control loop. Returns False if the buzzer can't be reached.
+
+    `robot` is unused and kept so the notebooks' `beep(robot)` calls still work. A missing buzzer is
     logged once instead of crashing the mission loop.
     """
-    buzzer = getattr(robot, "buzzer", None)
-    if buzzer is None:
+    try:
+        set_buzzer(True)
+    except (ImportError, OSError) as exc:
         if not _buzzer_warned:
-            log.warning("robot has no .buzzer; see Module 1 section 5 to find Yahboom's buzzer call")
+            log.warning("buzzer unreachable on I2C bus %d: %s", BATTERY_I2C_BUS, exc)
             _buzzer_warned.append(True)
         return False
-    buzzer.value = 1
-    threading.Timer(duration, setattr, (buzzer, "value", 0)).start()
+    threading.Timer(duration, set_buzzer, (False,)).start()
     return True
