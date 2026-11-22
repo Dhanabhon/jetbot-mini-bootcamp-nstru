@@ -277,6 +277,85 @@ tbody tr:hover td {
   background-color: #fcfcf9;
 }
 
+// ---------- Windows / macOS picker ----------
+// <html data-os> is set by head_custom.html; with no JS neither rule matches, so both OS blocks show.
+
+html[data-os="windows"] [data-os="mac"],
+html[data-os="mac"] [data-os="windows"] {
+  display: none;
+}
+
+.os-switch {
+  margin: 0 0 1.75rem;
+  padding: 0;
+  border: 0;
+
+  &[hidden] {
+    display: none;
+  }
+
+  legend {
+    float: left;
+    margin: 0 0.75rem 0 0;
+    padding: 0;
+    font-size: 0.9375rem;
+    line-height: 2.6rem;
+    color: #5b616b;
+  }
+}
+
+// a radio group, not a switch: it picks one of two values rather than turning something on/off
+.os-switch-options {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  background-color: $field;
+  border: 1px solid $rule;
+  border-radius: 8px;
+
+  label {
+    position: relative;
+  }
+
+  // the native radio stays on top (invisible) so keyboard arrows and screen readers work as usual
+  input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  span {
+    display: block;
+    padding: 0.4rem 1.1rem;
+    font-family: $heading-font-family;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #464b54;
+    border-radius: 5px;
+  }
+
+  input:hover + span {
+    color: $ink;
+    background-color: rgba($ink, 0.06);
+  }
+
+  input:checked + span {
+    color: #ffffff;
+    background-color: $ink;
+    box-shadow: inset 0 -3px 0 $marker-green;
+  }
+
+  input:focus-visible + span {
+    outline: 3px solid $sign-blue;
+    outline-offset: 2px;
+  }
+}
+
 // ---------- Footer ----------
 
 .site-footer {
@@ -285,6 +364,7 @@ tbody tr:hover td {
 
 @media (prefers-reduced-motion: no-preference) {
   .nav-list .nav-list-item .nav-list-link,
+  .os-switch-options span,
   .main-content a {
     transition:
       background-color 150ms ease,

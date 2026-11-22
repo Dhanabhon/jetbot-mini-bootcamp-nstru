@@ -6,6 +6,8 @@ nav_order: 4
 
 # ขั้นที่ 4: เข้า Jupyter Lab และเตรียมพร้อมเขียนโค้ด
 
+{% include os-switch.html %}
+
 ## เปิด Jupyter Lab
 
 1. เปิด **Google Chrome** (Yahboom ระบุว่า browser อื่นใช้งานได้ไม่ดี หรือ login ไม่ได้)
@@ -71,10 +73,57 @@ git clone https://github.com/Dhanabhon/jetbot-mini-bootcamp-nstru.git
 
 ## ส่งไฟล์ระหว่างคอมพิวเตอร์กับหุ่นยนต์
 
-- **ลากวางใน Jupyter Lab:** ลากไฟล์จากคอมพิวเตอร์ไปวางที่แถบไฟล์ด้านซ้าย ง่ายที่สุดสำหรับไฟล์ไม่กี่ไฟล์
-- **Windows:** ใช้ [WinSCP](https://winscp.net) ตั้ง Host เป็น IP ของหุ่นยนต์ Port `22` Username `jetson` Password `yahboom` แล้วลากไฟล์ข้ามฝั่งได้ อย่าแก้ไฟล์โค้ดใน WinSCP โดยตรง เพราะ encoding และ indent อาจเพี้ยน
-- **macOS หรือ PowerShell:** ใช้คำสั่ง `scp`
+**ลากวางใน Jupyter Lab** ง่ายที่สุดสำหรับไฟล์ไม่กี่ไฟล์ ลากไฟล์จากคอมพิวเตอร์ไปวางที่แถบไฟล์ด้านซ้าย ส่วนการเอาไฟล์จากหุ่นยนต์กลับมา ให้คลิกขวาที่ไฟล์แล้วเลือก **Download**
 
-  ```bash
-  scp ไฟล์ของฉัน.py jetson@192.168.1.196:~/
-  ```
+ถ้ามีไฟล์เยอะหรือทั้ง folder ใช้วิธีด้านล่าง
+
+<div data-os="windows" markdown="1">
+
+### Windows: WinSCP
+
+ใช้ [WinSCP](https://winscp.net) (ฟรี) ตั้งค่าดังนี้ แล้วลากไฟล์ข้ามฝั่งได้
+
+| ช่อง | ค่า |
+| :--- | :--- |
+| File protocol | SFTP |
+| Host name | IP ของหุ่นยนต์ |
+| Port number | `22` |
+| User name / Password | `jetson` / `yahboom` |
+
+อย่าแก้ไฟล์โค้ดใน WinSCP โดยตรง เพราะ encoding และ indent อาจเพี้ยน
+
+### Windows: คำสั่ง scp
+
+ใช้ใน Terminal หรือ PowerShell ได้เลย สั่งจากคอมพิวเตอร์ ไม่ใช่จากใน SSH ของหุ่นยนต์
+
+```powershell
+# ส่งไฟล์ไปหุ่นยนต์ (ไฟล์อยู่ใน folder ที่ Terminal เปิดอยู่)
+scp .\my_robot.py jetson@192.168.1.196:~/
+
+# เอาไฟล์จากหุ่นยนต์มาไว้ที่ Downloads
+scp jetson@192.168.1.196:~/my_robot.py $HOME\Downloads\
+```
+
+</div>
+
+<div data-os="mac" markdown="1">
+
+### macOS: คำสั่ง scp
+
+สั่งใน Terminal ของคอมพิวเตอร์ ไม่ใช่จากใน SSH ของหุ่นยนต์
+
+```bash
+# ส่งไฟล์ไปหุ่นยนต์
+scp my_robot.py jetson@192.168.1.196:~/
+
+# เอาไฟล์จากหุ่นยนต์มาไว้ที่ Downloads
+scp jetson@192.168.1.196:~/my_robot.py ~/Downloads/
+```
+
+พิมพ์ path ไม่ถูก ให้ลากไฟล์จาก Finder มาวางในหน้าต่าง Terminal ระบบจะใส่ path ให้เอง
+
+### macOS: โปรแกรมแบบมีหน้าต่าง
+
+ใช้ [Cyberduck](https://cyberduck.io) (ฟรี) กด **Open Connection** เลือก **SFTP** แล้วใส่ Server เป็น IP ของหุ่นยนต์ Port `22` Username `jetson` Password `yahboom`
+
+</div>

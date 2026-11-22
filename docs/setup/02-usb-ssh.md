@@ -6,15 +6,33 @@ nav_order: 2
 
 # ขั้นที่ 2: ต่อสาย USB แล้ว SSH เข้าหุ่นยนต์
 
+{% include os-switch.html %}
+
 วิธีนี้เรียกว่า **headless mode** คอมพิวเตอร์คุยกับหุ่นยนต์ผ่านสาย USB โดยตรง ไม่ต้องมี Wi-Fi จอ หรือคีย์บอร์ด และ IP ของหุ่นยนต์เป็น `192.168.55.1` เสมอ
 
 ## ต่อสาย
 
 1. **เปิดสวิตช์หุ่นยนต์ก่อน** แล้วรอจน boot เสร็จ (Buzzer ดัง 3 ครั้ง)
-2. เสียบสาย micro USB ที่ช่องบนบอร์ด Jetson Nano อีกด้านเสียบคอมพิวเตอร์
-3. รอสักครู่ คอมพิวเตอร์จะเห็น drive ใหม่ชื่อประมาณ `L4T-README` (Windows แสดงอุปกรณ์เป็น *Linux File-Stor Gadget USB Device*) แปลว่าต่อสำเร็จ
+2. เสียบสาย micro USB ที่ช่องบนบอร์ด Jetson Nano อีกด้านเสียบคอมพิวเตอร์ ถ้าคอมพิวเตอร์มีแต่ช่อง USB-C ให้ใช้สาย USB-C to micro USB ที่ส่งข้อมูลได้ หรือหัวแปลง
+3. รอสักครู่ แล้วตรวจว่าคอมพิวเตอร์เห็นหุ่นยนต์
+
+<div data-os="windows" markdown="1">
+
+**Windows:** File Explorer จะมี drive ใหม่ชื่อประมาณ `L4T-README` และ Device Manager แสดงอุปกรณ์ *Linux File-Stor Gadget USB Device* แปลว่าต่อสำเร็จ
+
+</div>
+
+<div data-os="mac" markdown="1">
+
+**macOS:** drive ชื่อ `L4T-README` จะขึ้นบน Desktop และแถบซ้ายของ Finder แปลว่าต่อสำเร็จ
+
+Mac ที่ใช้ชิป Apple (M1 ขึ้นไป) อาจขึ้นหน้าต่าง **Allow accessory to connect?** ให้กด **Allow** ถ้าเผลอกด Don't Allow ให้ดูวิธีแก้ใน[แก้ปัญหาการเชื่อมต่อ](troubleshooting.md#usb-not-detected)
+
+</div>
 
 ลำดับสำคัญ: ต้องเปิดหุ่นยนต์ก่อนเสียบสาย และสายต้องเป็นสายที่ส่งข้อมูลได้
+
+<div data-os="windows" markdown="1">
 
 ## SSH บน Windows
 
@@ -32,6 +50,9 @@ Windows 10 และ 11 มี SSH ติดมาในเครื่องแ
 
 เมื่อเห็น prompt ขึ้นต้นด้วย `jetson@` แปลว่าเข้าหุ่นยนต์ได้แล้ว
 
+- **วางคำสั่งที่ copy มา:** กด `Ctrl + V` หรือคลิกขวาในหน้าต่าง Terminal
+- **ขึ้นว่า `ssh` is not recognized:** เครื่องยังไม่มี OpenSSH Client ให้ติดตั้งตาม[แก้ปัญหาการเชื่อมต่อ](troubleshooting.md#windows-ssh-missing) หรือใช้ PuTTY ด้านล่างแทน
+
 ### ถ้าอยากใช้โปรแกรมแบบมีหน้าต่าง
 
 Yahboom แนะนำ PuTTY หรือ Xshell ตั้งค่าดังนี้
@@ -43,16 +64,30 @@ Yahboom แนะนำ PuTTY หรือ Xshell ตั้งค่าดัง
 | Connection type | SSH |
 | Username / Password | `jetson` / `yahboom` |
 
+</div>
+
+<div data-os="mac" markdown="1">
+
 ## SSH บน macOS
 
-1. เปิด **Terminal** (กด `Cmd + Space` แล้วพิมพ์ Terminal)
-2. พิมพ์คำสั่งเดียวกัน
+macOS มี SSH ติดมาในเครื่องแล้ว ไม่ต้องลงโปรแกรมเพิ่ม
+
+1. เปิด **Terminal** (กด `Cmd + Space` แล้วพิมพ์ Terminal หรือเปิดจาก Applications > Utilities)
+2. พิมพ์คำสั่ง
 
    ```bash
    ssh jetson@192.168.55.1
    ```
 
-3. พิมพ์ `yes` ในครั้งแรก แล้วใส่ password `yahboom`
+3. ครั้งแรกจะถามว่า `Are you sure you want to continue connecting` ให้พิมพ์ `yes`
+4. ใส่ password `yahboom` (ระหว่างพิมพ์จะไม่มีตัวอักษรขึ้น เป็นเรื่องปกติ)
+
+เมื่อเห็น prompt ขึ้นต้นด้วย `jetson@` แปลว่าเข้าหุ่นยนต์ได้แล้ว
+
+- **วางคำสั่งที่ copy มา:** กด `Cmd + V`
+- **หยุดคำสั่งที่ค้างอยู่:** กด `Control + C` (ปุ่ม Control ไม่ใช่ Cmd)
+
+</div>
 
 ## ตรวจว่าใช้งานได้
 
@@ -61,5 +96,7 @@ Yahboom แนะนำ PuTTY หรือ Xshell ตั้งค่าดัง
 ```bash
 hostname
 ```
+
+ใช้เสร็จแล้วพิมพ์ `exit` เพื่อออกจากหุ่นยนต์ กลับมาที่คอมพิวเตอร์ของเรา
 
 ถัดไป: [ขั้นที่ 3 ให้หุ่นยนต์ต่อ Wi-Fi](03-wifi.md)
