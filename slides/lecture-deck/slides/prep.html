@@ -1,23 +1,23 @@
 <section id="prep" class="alt">
 <div class="head">
 <p class="eyebrow">ก่อนเขียนโค้ดบรรทัดแรก · พิมพ์ใน Terminal ของ Jupyter Lab</p>
-<h2>4 คำสั่งที่ต้องรู้ ไม่งั้นรถจะทำตัวแปลก</h2>
+<h2>4 คำสั่งที่ใช้บ่อยใน Terminal</h2>
 </div>
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; flex:1;">
 <div class="card in" style="--i:0;">
-<p class="k">1 · ปิดโปรแกรม APP ของ Yahboom</p>
-<p class="mono" style="font-size:28px; color:#14161a;">sudo systemctl stop jetbotmini_start</p>
-<p class="body">โปรแกรมนี้จับมอเตอร์และกล้องไว้ตั้งแต่เปิดเครื่อง ถ้าไม่ปิด โค้ดของเราจะแย่งอุปกรณ์กับมัน</p>
+<p class="k">1 · เข้า folder ของ bootcamp</p>
+<p class="mono" style="font-size:28px; color:#14161a;">cd ~/jetbot-mini-bootcamp-nstru</p>
+<p class="body">Terminal เปิดที่ folder นี้อยู่แล้ว ใช้เมื่อเปลี่ยนไป folder อื่นแล้วจะกลับมา</p>
 </div>
 <div class="card in" style="--i:1;">
-<p class="k">2 · ตั้ง power mode เป็น MAXN</p>
-<p class="mono" style="font-size:28px; color:#14161a;">sudo nvpmodel -m0</p>
-<p class="body">โหมด 5W ใช้ CPU แค่ 2 core งาน vision จะช้าลงมาก เช็กโหมดปัจจุบันด้วย <span class="mono">nvpmodel -q</span></p>
+<p class="k">2 · แก้ notebook จนเสีย อยากเริ่มใหม่</p>
+<p class="mono" style="font-size:28px; color:#14161a;">git checkout -- notebooks/&lt;ชื่อไฟล์&gt;</p>
+<p class="body">notebook กลับเป็นฉบับเริ่มต้น ทุกอย่างที่แก้ไว้ในไฟล์นั้นจะหาย ปิด notebook นั้นก่อนสั่ง</p>
 </div>
 <div class="card in" style="--i:2;">
 <p class="k">3 · ก่อน Module 6: ปล่อยจอ OLED</p>
-<p class="mono" style="font-size:28px; color:#14161a;">sudo systemctl stop jetbotmini_stats</p>
-<p class="body">จด IP ไว้ก่อน หลังสั่งแล้วจอจะไม่แสดง IP อีก แต่โค้ดของเราเขียนชื่อป้ายลงจอได้</p>
+<p class="mono" style="font-size:28px; color:#14161a;">sudo systemctl stop nstru_status</p>
+<p class="body">จอจะไม่แสดงชื่อ Wi-Fi และรหัสอีก คอมพิวเตอร์ที่ต่ออยู่ใช้ต่อได้ แล้วโค้ดของเราเขียนชื่อป้ายลงจอได้</p>
 </div>
 <div class="card in" style="--i:3; border-color:#b3261e;">
 <p class="k" style="color:#b3261e;">4 · ปิดเครื่องทุกครั้ง</p>
@@ -26,5 +26,5 @@
 </div>
 </div>
 <div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
-<aside>เปิด Terminal จากเมนู File > New > Terminal ใน Jupyter Lab คำสั่ง stop มีผลแค่รอบนี้ เปิดเครื่องใหม่โปรแกรม APP จะกลับมา ถ้าจะปิดตลอดช่วงอบรมให้ใช้ sudo systemctl disable jetbotmini_start แล้วเปิดคืนภายหลังด้วย enable ข้อ 3 ยังไม่ต้องทำตอนนี้ ให้กลับมาดูหน้านี้ตอนเริ่ม Module 6 ข้อ 4 ย้ำทุกครั้งก่อนพักและก่อนเลิก</aside>
+<aside>เปิด Terminal จากเมนู File > New > Terminal ใน Jupyter Lab คำสั่งที่มี sudo ถามรหัส ให้ใส่ yahboom ไม่ต้องปิดโปรแกรม APP ของ Yahboom หรือตั้ง MAXN เอง เพราะโปรแกรมตั้งค่าขั้นที่ 4 และ 6 ทำให้แล้ว ข้อ 3 ยังไม่ต้องทำตอนนี้ ให้กลับมาดูหน้านี้ตอนเริ่ม Module 6 จอจะกลับมาแสดงเองเมื่อเปิดเครื่องใหม่ ข้อ 4 ย้ำทุกครั้งก่อนพักและก่อนเลิก</aside>
 </section>

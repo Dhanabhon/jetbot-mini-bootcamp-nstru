@@ -10,8 +10,8 @@ nav_order: 1
 
 ## เชื่อมต่อ
 
-- ต่อคอมพิวเตอร์เข้า Wi-Fi ของห้องอบรม (ชื่อและรหัสผ่านติดไว้หน้าห้อง)
-- อ่าน IP จากสติ๊กเกอร์ที่ตัวรถ หรือจอ OLED แล้วเปิด `http://<IP>:8888` ใน Google Chrome
+- ต่อคอมพิวเตอร์เข้า Wi-Fi ของหุ่นยนต์ตัวเอง ชื่อและรหัสอยู่บนจอ OLED เช่น `JETBOT-07`
+- เปิด `http://10.42.0.1:8888` ใน Google Chrome (password `yahboom`)
 
 ## คำสั่งที่ใช้บ่อย
 
@@ -25,7 +25,7 @@ nav_order: 1
 | แสดงข้อความบนจอ OLED | `!sudo systemctl stop nstru_status jetbotmini_stats` ครั้งเดียว แล้ว `Oled().show("STOP")` |
 | ส่งเสียง Buzzer | `beep(robot)` (ไม่ block loop) |
 | อ่านแรงดันแบต | `read_battery_voltage()` (เต็ม 12.6 V) |
-| ดูภาพ debug บนเครื่องตัวเอง | `server = MjpegServer().start()` แล้ว `server.push(draw_overlay(frame, VizState(...)))` เปิด `http://<IP>:8080` |
+| ดูภาพ debug บนเครื่องตัวเอง | `server = MjpegServer().start()` แล้ว `server.push(draw_overlay(frame, VizState(...)))` เปิด `http://10.42.0.1:8080` |
 | โหลด / บันทึกค่าของรถ | `load_params()` / `save_params(kp=0.6)` (ไฟล์ `my_params.json`) |
 
 `CsiCamera`, `Oled`, `beep`, `read_battery_voltage` import จาก `jetbot_nstru.hardware` ส่วน `MjpegServer`, `VizState`, `draw_overlay` อยู่ใน `jetbot_nstru.viz`

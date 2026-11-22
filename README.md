@@ -27,8 +27,8 @@ Bootcamp 6 ชั่วโมงสำหรับนักศึกษา ม�
 
 ครั้งแรกให้ทำตาม[คู่มือการเชื่อมต่อหุ่นยนต์](docs/setup/index.md) (รองรับ Windows และ macOS) หลังจากนั้น
 
-1. เปิดหุ่นยนต์ แล้วอ่าน IP Address จากจอ OLED
-2. เปิด Google Chrome ไปที่ `http://<IP>:8888` เพื่อเข้า Jupyter Lab (password `yahboom`)
+1. เปิดหุ่นยนต์ แล้วต่อคอมพิวเตอร์เข้า Wi-Fi ของหุ่นยนต์ ชื่อและรหัสอยู่บนจอ OLED
+2. เปิด Google Chrome ไปที่ `http://10.42.0.1:8888` เพื่อเข้า Jupyter Lab (password `yahboom`)
 3. เปิด notebook ตามลำดับใน `notebooks/`
 
 ## Notebook แต่ละ module

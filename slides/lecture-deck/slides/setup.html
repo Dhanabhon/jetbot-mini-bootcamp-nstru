@@ -1,39 +1,39 @@
 <section id="setup" class="alt">
 <div class="head">
-<p class="eyebrow">ทำครั้งแรกครั้งเดียว · ประมาณ 16 นาที</p>
+<p class="eyebrow">ขั้นที่ 0 · ทำครั้งแรกครั้งเดียว · ประมาณ 20 นาที</p>
 <h2>4 ขั้นจากกล่องถึง Jupyter Lab</h2>
 </div>
 <div style="flex:1;"></div>
 <div class="flow">
 <div class="step in" style="--i:0;">
 <p class="n">1 · 3 นาที</p>
-<h3>เปิดเครื่อง</h3>
-<p>ตรวจสัญญาณ boot และดูว่าจอ OLED ติด</p>
+<h3>ต่อจอ</h3>
+<p>ต่อจอ HDMI คีย์บอร์ด และเมาส์ แล้วเปิดเครื่อง</p>
 </div>
 <x-shape kind="arrow-right" class="arrow"></x-shape>
 <div class="step in" style="--i:1;">
-<p class="n">2 · 5 นาที</p>
-<h3>USB + SSH</h3>
-<p>ต่อสาย แล้ว <span class="mono">ssh jetson@192.168.55.1</span></p>
+<p class="n">2 · 12 นาที</p>
+<h3>โปรแกรมตั้งค่า</h3>
+<p>รัน <span class="mono">tools/robot_setup.py</span> ทำตามผู้สอนทีละขั้น</p>
 </div>
 <x-shape kind="arrow-right" class="arrow"></x-shape>
 <div class="step in" style="--i:2;">
 <p class="n">3 · 3 นาที</p>
-<h3>ต่อ Wi-Fi</h3>
-<p>เข้า Wi-Fi ของ router ห้องอบรม แล้วจด IP</p>
+<h3>ถอดจอ</h3>
+<p>shutdown ถอดจอ เปิดใหม่ รอ Buzzer ดัง 3 ครั้ง</p>
 </div>
 <x-shape kind="arrow-right" class="arrow"></x-shape>
 <div class="step go in" style="--i:3;">
-<p class="n">4 · 5 นาที</p>
+<p class="n">4 · 2 นาที</p>
 <h3>Jupyter Lab</h3>
-<p>เปิด <span class="mono">http://&lt;IP&gt;:8888</span> ใน Chrome พร้อมเขียนโค้ด</p>
+<p>ต่อ Wi-Fi ตามจอ OLED แล้วเปิด <span class="mono">10.42.0.1:8888</span></p>
 </div>
 </div>
 <div class="card in" style="--i:4; flex-direction:row; align-items:center; gap:32px; padding:32px 40px;">
 <x-icon name="Wrench" style="width:48px; height:48px; color:#0b5cad;"></x-icon>
-<p class="body" style="flex:1;">ติดขั้นไหน เปิดหน้า <b>แก้ปัญหาการเชื่อมต่อ</b> บนเว็บคู่มือ มีวิธีแยกสำหรับ Windows และ macOS</p>
+<p class="body" style="flex:1;">ขั้นไหนขึ้น <b>✗ ไม่ผ่าน</b> อย่าเพิ่งปิดเครื่อง ยกมือเรียกทีมงาน ทุกขั้นมีในเว็บคู่มือหัวข้อ <b>ขั้นที่ 0: ตั้งค่าหุ่นยนต์ครั้งแรก</b></p>
 </div>
 <div style="flex:1;"></div>
 <div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
-<aside>ขั้นที่ 2 บน Windows ต้องมี OpenSSH Client ถ้าพิมพ์ ssh แล้วขึ้น "is not recognized" ให้ทีมงานช่วย ทุกขั้นมีในเว็บคู่มือหัวข้อ "การเชื่อมต่อหุ่นยนต์" และมีปุ่มสลับ Windows/macOS ที่หัวเว็บ</aside>
+<aside>เปิด Terminal ด้วย Ctrl+Alt+T แล้วสั่ง cd ~/jetbot-mini-bootcamp-nstru ตามด้วย python3 tools/robot_setup.py รหัส sudo คือ yahboom ให้ทุกคนกด Enter ไปพร้อมกันทีละขั้น ขั้นที่ 2 พิมพ์หมายเลขจากสติ๊กเกอร์ ขั้นที่ 3 บอกเวลาจริงให้ทุกคนเทียบ ขั้นที่ 5 หุ่นยนต์จะหลุดจาก Wi-Fi เดิมและเปิด Wi-Fi ของตัวเอง ขั้นที่ 9 ให้ยกล้อลอยก่อน และกดปุ่ม KEY1 ภายใน 10 วินาทีเมื่อโปรแกรมบอก</aside>
 </section>

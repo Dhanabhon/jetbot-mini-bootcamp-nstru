@@ -40,6 +40,6 @@ nav_order: 3
 | :--- | :--- |
 | Username | `jetson` |
 | Password (ทุกจุดในระบบ รวมถึง Jupyter Lab) | `yahboom` |
-| Jupyter Lab | `http://<IP>:8888` |
+| Jupyter Lab | `http://10.42.0.1:8888` (ผ่านสาย USB ใช้ `192.168.55.1`) |
 
 เนื้อหาส่วนนี้เรียบเรียงจาก[คู่มือ JetBot Mini ของ Yahboom](https://www.yahboom.net/study/JETBOT-mini) บทที่ 2.2, 2.3, 3.1, 3.3 และ 4.1
