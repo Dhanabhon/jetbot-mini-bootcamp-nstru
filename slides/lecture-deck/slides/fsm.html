@@ -3,37 +3,42 @@
 <p class="eyebrow">Module 6 · State Machine</p>
 <h2>อ่านป้ายก่อน แล้วค่อยทำที่จุดเขียว</h2>
 </div>
-<div style="flex:1;"></div>
-<div class="flow">
-<div class="step in" style="--i:0;">
-<p class="n">STATE 1</p>
-<h3>เดินตามเส้น</h3>
-<p>PID ทำงานตลอด กล้องคอยมองหาป้ายข้างหน้า</p>
+<!-- w320 h124 | c0 0 c1 448 c2 896 c3 1344 | row A 70-194 (mid 132) | row B 254-378 (mid 316) | row C 486-610 (mid 548) | return strip y16, loop y420 -->
+<div class="dia in" style="--i:0; height:610px;">
+<svg width="1664" height="610" viewBox="0 0 1664 610" aria-label="FOLLOW เจอจุดเขียวไป CROSS หรือไป STOP_WAIT ถ้าป้ายคือ STOP แล้วจึงไป CROSS จาก CROSS ไป TURN_LEFT TURN_RIGHT หรือ PARK_APPROACH ตามป้ายที่จำไว้ PARK_APPROACH จบที่ DONE ส่วน TURN ทั้งสองและทางตรงกลับไป FOLLOW">
+<defs>
+<marker id="fsm-h" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#5d636d" stroke="none"/></marker>
+<marker id="fsm-b" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#1a7f3d" stroke="none"/></marker>
+</defs>
+<g fill="none" stroke="#5d636d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#fsm-h)">
+<path d="M 320 316 L 442 316"/>
+<path d="M 240 254 L 240 132 L 442 132"/>
+<path d="M 608 194 L 608 248"/>
+<path d="M 768 286 L 832 286 L 832 132 L 890 132"/>
+<path d="M 768 316 L 890 316"/>
+<path d="M 768 346 L 864 346 L 864 548 L 890 548"/>
+<path d="M 1216 548 L 1338 548"/>
+</g>
+<g fill="none" stroke="#1a7f3d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+<path d="M 1216 132 L 1280 132"/>
+<path d="M 1216 316 L 1280 316 L 1280 16 L 100 16 L 100 248" marker-end="url(#fsm-b)"/>
+<path d="M 608 378 L 608 420 L 160 420 L 160 384" marker-end="url(#fsm-b)"/>
+</g>
+</svg>
+<div class="node go" style="left:0; top:254px; width:320px; height:124px;"><p class="m">FOLLOW</p><p class="d">เดินตามเส้นด้วย PID เห็นป้ายก็จำไว้ โชว์บน OLED</p></div>
+<div class="node" style="left:448px; top:70px; width:320px; height:124px;"><p class="m">STOP_WAIT</p><p class="d">ป้ายที่จำไว้คือ STOP หยุดนิ่ง 3 วินาที</p></div>
+<div class="node" style="left:448px; top:254px; width:320px; height:124px;"><p class="m">CROSS</p><p class="d">วิ่งตรงขึ้นไปกลางจุดตัด แล้วดูป้ายที่จำไว้</p></div>
+<div class="node" style="left:896px; top:70px; width:320px; height:124px;"><p class="m">TURN_LEFT</p><p class="d">ป้ายซ้าย หมุนจนเจอเส้นใหม่</p></div>
+<div class="node" style="left:896px; top:254px; width:320px; height:124px;"><p class="m">TURN_RIGHT</p><p class="d">ป้ายขวา หมุนจนเจอเส้นใหม่</p></div>
+<div class="node" style="left:896px; top:486px; width:320px; height:124px;"><p class="m">PARK_APPROACH</p><p class="d">ป้าย PARKING ค่อย ๆ วิ่งเข้าหาป้าย</p></div>
+<div class="node end" style="left:1344px; top:486px; width:320px; height:124px;"><p class="m">DONE</p><p class="d">เจอตัว T หรือป้ายเต็มจอ หยุดรถ จบภารกิจ</p></div>
+<div class="node note" style="left:1344px; top:70px; width:320px; height:308px; justify-content:flex-start; padding:28px 26px; gap:12px;"><p class="m">กลับ FOLLOW ทุกครั้ง</p><p class="d" style="font-size:26px;">ล้างป้ายที่จำไว้ และไม่สนจุดเขียวเดิมสักครู่ (cooldown) จุดตัดถัดไปจะได้ไม่ทำป้ายเก่าซ้ำ</p></div>
+<p class="edge" style="left:328px; top:270px; width:112px;">เจอเขียว</p>
+<p class="edge" style="left:252px; top:90px; width:188px;">เขียว + STOP</p>
+<p class="edge" style="left:622px; top:207px; width:140px;">ครบ 3 วิ</p>
+<p class="edge back" style="left:470px; top:26px; width:420px;">เจอเส้นใหม่ → กลับ FOLLOW</p>
+<p class="edge back" style="left:176px; top:430px; width:420px;">ตรงไป หรือไม่มีป้าย → กลับ FOLLOW</p>
 </div>
-<x-shape kind="arrow-right" class="arrow"></x-shape>
-<div class="step in" style="--i:1;">
-<p class="n">STATE 2 · Pre-fetch</p>
-<h3>เห็นป้าย</h3>
-<p>จำชื่อป้ายไว้ โชว์บน OLED และส่งเสียง Buzzer</p>
-</div>
-<x-shape kind="arrow-right" class="arrow"></x-shape>
-<div class="step in" style="--i:2;">
-<p class="n">STATE 3 · Trigger</p>
-<h3>เจอสีเขียว</h3>
-<p>ถึงจุดตัดแล้ว ใช้ป้ายที่จำไว้ตัดสินใจ</p>
-</div>
-<x-shape kind="arrow-right" class="arrow"></x-shape>
-<div class="step go in" style="--i:3;">
-<p class="n">STATE 4</p>
-<h3>ทำตามป้าย</h3>
-<p>เลี้ยว ตรงไป หยุด 3 วินาที หรือจอด</p>
-</div>
-</div>
-<div class="row in" style="--i:4; align-items:center; gap:24px;">
-<p class="pill blue" style="flex:none;">ทำเสร็จ</p>
-<p class="body" style="flex:1; font-size:28px;">ล้างป้ายที่จำไว้ แล้วกลับไป STATE 1 · ถ้าป้ายคือ PARKING ให้หยุดรถและจบโปรแกรม</p>
-</div>
-<div style="flex:1;"></div>
 <div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
-<aside>ต้องแยก "เห็นป้าย" ออกจาก "ถึงจุดตัด" เพราะกล้องเห็นป้ายก่อนถึงสี่เหลี่ยมสีเขียว ถ้าเลี้ยวทันทีที่เห็นป้าย รถจะเลี้ยวก่อนถึงทางแยก อย่าลืมล้างค่าป้ายหลังทำเสร็จ ไม่งั้นจุดตัดถัดไปที่ไม่มีป้ายจะทำซ้ำป้ายเดิม</aside>
+<aside>ชื่อในกล่องตรงกับ state ใน jetbot_nstru/fsm.py ที่ notebook 06 ใช้ ต้องแยก "เห็นป้าย" ออกจาก "ถึงจุดตัด" เพราะกล้องเห็นป้ายก่อนถึงสี่เหลี่ยมสีเขียว FOLLOW จึงแค่จำป้ายไว้ แล้วตัดสินใจตอนเจอเขียว ถ้าเลี้ยวทันทีที่เห็นป้าย รถจะเลี้ยวก่อนถึงทางแยก CROSS พารถขึ้นไปกลางจุดตัดก่อนเลี้ยว เส้นสีเขียวคือทางกลับ FOLLOW ซึ่งต้องล้างป้ายที่จำไว้ทุกครั้ง ไม่งั้นจุดตัดถัดไปที่ไม่มีป้ายจะทำซ้ำป้ายเดิม PARKING ไม่ได้หยุดทันที แต่ค่อย ๆ เข้าหาป้ายจนเจอตัว T แล้วจึงจบ</aside>
 </section>
