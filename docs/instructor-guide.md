@@ -5,6 +5,11 @@ nav_order: 7
 
 # คู่มือผู้สอนและทีมจัดงาน
 
+## สไลด์บรรยาย
+
+- [ดาวน์โหลดสไลด์ (PDF 28 หน้า)]({{ '/assets/slides/jetbot-mini-bootcamp-lecture.pdf' | relative_url }}) ไม่มี speaker notes ใช้แจกผู้เข้าอบรมหรือเปิดสำรองถ้าไม่มี internet
+- ต้นฉบับพร้อม speaker notes อยู่ใน `slides/lecture-deck/` ของ repo วิธีแก้และสร้าง PDF ใหม่ดูใน `slides/README.md`
+
 ## ก่อนวันอบรม (Pre-flight)
 
 - [ ] หุ่นยนต์ทั้ง 10 ตัว boot ได้ และเข้า Jupyter Lab ได้
