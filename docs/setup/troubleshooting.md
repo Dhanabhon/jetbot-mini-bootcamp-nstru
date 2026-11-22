@@ -12,6 +12,48 @@ nav_order: 5
 - ตรวจว่า SD card (รุ่น 2GB) หรือ USB drive (รุ่น 4GB) เสียบแน่น
 - ตรวจระดับแบตเตอรี่ แล้วปิดเปิดเครื่องใหม่
 
+## Buzzer ดังไม่หยุด และจอ HDMI ค้างที่โลโก้ NVIDIA หรือขึ้น `bash: no job control in this shell`
+{: #boot-root-not-found }
+
+**อาการ:** Buzzer ดังไม่หยุด จอ OLED ว่าง ถ้าต่อจอ HDMI จะเห็นค้างที่โลโก้ NVIDIA หรือขึ้นข้อความ `bash: no job control in this shell` ตามด้วย prompt `bash-4.3#`
+
+**สาเหตุ:** kernel ทำงานแล้ว แต่หา root filesystem ซึ่งเป็นที่อยู่ของระบบหลักไม่เจอ จึงหยุดอยู่ที่ shell สำรองของ initrd และไม่ได้เข้าสู่ Ubuntu โปรแกรมที่สั่งให้ Buzzer หยุดและแสดง IP บน OLED จึงไม่ได้ทำงาน หุ่นยนต์รุ่น 4GB ตั้งค่าให้ระบบหลักอยู่บน USB drive (`root=/dev/sda1`) อาการนี้จึงเกิดเมื่อ USB drive หลุด ไม่ได้เสียบ หรือเสีย
+
+**ผู้เข้าอบรมทำได้:** ปิดสวิตช์ เสียบ USB drive ให้แน่นที่ช่อง USB-A แล้วเปิดเครื่องใหม่ ถ้ายังไม่หาย ให้เรียกทีมงาน
+
+### สำหรับทีมงาน: หาสาเหตุจาก shell `bash-4.3#`
+
+ต่อจอ HDMI และคีย์บอร์ด USB แล้วพิมพ์
+
+```bash
+cat /proc/cmdline
+ls /dev/sd* /dev/mmcblk*
+```
+
+- `root=` ตัว**สุดท้าย**ใน `/proc/cmdline` คือที่ที่ kernel ใช้หา root filesystem
+- ไม่มี `/dev/sda1`: ระบบไม่เห็น USB drive
+- ข้อความเหนือ prompt มี `critical medium error, dev sda` หรือ `can't read superblock`: USB drive เสียทางฮาร์ดแวร์ ให้เปลี่ยนตัวใหม่แล้วเขียน image ของ Yahboom ลงไป
+- ข้อความ `imx219 ... board setup failed` ไม่ได้ทำให้ boot ไม่ผ่าน ข้อความนี้แปลว่ากล้องไม่ตอบ ให้ตรวจสายแพกล้องทีหลัง
+
+### สำหรับทีมงาน: boot จาก SD card แทน USB drive ที่เสีย
+
+ใช้ได้เมื่อ SD card (`mmcblk0p1`) มีระบบครบอยู่แล้ว ตรวจก่อนว่า `/mnt/home` มีโฟลเดอร์ `jetson` และ `df` แสดงว่าใช้พื้นที่ไปหลาย GB
+
+```bash
+mount /dev/mmcblk0p1 /mnt
+ls /mnt/home && df -h /mnt
+cp /mnt/boot/extlinux/extlinux.conf /mnt/boot/extlinux/extlinux.conf.bak
+sed -i 's#root=/dev/sda1#root=/dev/mmcblk0p1#' /mnt/boot/extlinux/extlinux.conf
+grep root= /mnt/boot/extlinux/extlinux.conf
+umount /mnt
+```
+
+ก่อนพิมพ์ `umount` ตรวจผลของ `grep` ให้แน่ว่าเป็น `root=/dev/mmcblk0p1` ตัวสะกด **mmc** ผิดเพียงตัวเดียวก็ boot ไม่ผ่าน จากนั้นถอด USB drive ที่เสียออกแล้วปิดเปิดสวิตช์
+
+- shell นี้ไม่มีคำสั่ง `sync` และ `clear` ไม่ต้องกังวล เพราะ `umount` จะเขียนข้อมูลที่ค้างอยู่ลง SD card ให้เอง ระวังพิมพ์เป็น `unmount` ที่ถูกคือ `umount`
+- อย่าพิมพ์ `exit` ใน shell นี้ จะทำให้ kernel panic
+- ถ้าต้องย้อนกลับ ให้ `cp` ไฟล์ `extlinux.conf.bak` ทับไฟล์เดิม
+
 ## เสียบ USB แล้วคอมพิวเตอร์ไม่เห็นหุ่นยนต์
 {: #usb-not-detected }
 
