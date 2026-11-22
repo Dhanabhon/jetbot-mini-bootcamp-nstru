@@ -138,7 +138,7 @@ cd ~/jetbot-mini-bootcamp-nstru
 git pull /media/jetson/<ชื่อ drive>/jetbot-mini-bootcamp-nstru.bundle main
 ```
 
-ทำก่อนผู้เข้าอบรมเริ่มแก้ notebook ถ้ามีการแก้แล้ว `git pull` อาจชนกับไฟล์ที่แก้ไว้
+ทำก่อนผู้เข้าอบรมเริ่มแก้ notebook ถ้ามีการแก้แล้ว `git pull` อาจชนกับไฟล์ที่แก้ไว้ (แค่รัน notebook แล้ว save ก็นับว่าแก้) ดูวิธีแก้ใน[แก้ปัญหา](setup/troubleshooting.md#git-pull-local-changes)
 
 ## โปรแกรมตั้งค่าหุ่นยนต์
 {: #robot-setup }

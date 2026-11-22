@@ -180,6 +180,29 @@ nmcli -t -f NAME,DEVICE con show --active
 
 ถ้าจะสลับไป Wi-Fi อื่นแค่ชั่วคราวแล้วกลับมา ให้สั่งจาก Terminal บนจอ HDMI ของหุ่นยนต์ ถ้าสั่งจาก Terminal ของ Jupyter Lab หน้า Jupyter จะหลุดทันที แล้วจะพิมพ์คำสั่งกลับไม่ได้ ต้องเปิดเครื่องใหม่อย่างเดียว
 
+## `git pull` ขึ้น Your local changes would be overwritten by merge
+{: #git-pull-local-changes }
+
+ทุกครั้งที่รัน notebook แล้ว save, Jupyter จะเขียนผลของแต่ละ cell (ข้อความ ภาพ) ลงในไฟล์ `.ipynb` ด้วย git จึงเห็นว่าไฟล์ถูกแก้ แม้ไม่ได้แก้โค้ดเลย แล้ว `git pull` จะหยุดไม่ยอมเขียนทับ
+
+ถ้าไม่ได้เขียนโค้ดที่อยากเก็บไว้ ให้ทิ้งการแก้ทั้งหมดแล้ว pull ใหม่
+
+```bash
+cd ~/jetbot-mini-bootcamp-nstru
+git checkout -- .
+git pull
+```
+
+`git checkout -- .` คืนเฉพาะไฟล์ที่อยู่ใน git ให้เหมือนเดิม ค่าที่จูนไว้ใน `my_params.json` ภาพใน `dataset/` และ `race_log.csv` ไม่หาย เพราะ git ไม่ได้เก็บไฟล์เหล่านี้ ผลการรันที่หายไปจาก notebook ได้คืนเมื่อรัน cell อีกครั้ง
+
+ถ้าเขียนโค้ดใน notebook ไว้แล้วอยากเก็บไว้ ให้ copy ไฟล์นั้นออกไปก่อน (เปลี่ยนชื่อไฟล์ให้ตรงกับที่ git แจ้ง) แล้วค่อยสั่ง 3 บรรทัดด้านบน
+
+```bash
+cp notebooks/05_traffic_sign_recognition.ipynb ~/my_05.ipynb
+```
+
+หุ่นยนต์ใช้ git รุ่นเก่า (Ubuntu 18.04) จึงไม่มีคำสั่ง `git restore` ที่เว็บอื่นมักแนะนำ ใช้ `git checkout --` แทน
+
 ## กล้องไม่มีภาพ หรือภาพกะพริบใน Jupyter Lab
 
 มักเกิดหลังปิดเครื่องโดยไม่ shutdown หรือมี notebook อื่นใช้กล้องค้างอยู่
