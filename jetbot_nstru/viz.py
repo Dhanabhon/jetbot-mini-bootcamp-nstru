@@ -10,12 +10,16 @@ Notebook (robot standing still, tuning thresholds):
 Browser (robot driving):
     server = MjpegServer(port=8080).start()   # open http://<robot-ip>:8080
     server.push(draw_overlay(frame, state))   # call every loop; extra frames are dropped
+
+A tool can serve its own page and take JSON from it with page= and on_post=
+(see notebooks/solutions/03_line_tuner.py).
 """
+import json
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
-from typing import List, NamedTuple, Optional, Tuple
+from typing import Callable, List, NamedTuple, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -31,6 +35,7 @@ TEXT_COLOR = (232, 239, 241)
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.4
 HUD_ROW_HEIGHT = 16
+MAX_POST_BYTES = 4096  # settings from a page are tiny; refuse anything bigger
 
 
 class VizState(NamedTuple):
@@ -147,11 +152,16 @@ class MjpegServer:
     above max_fps instead of slowing the control loop.
     """
 
-    def __init__(self, port: int = 8080, max_fps: float = 10.0, quality: int = 70):
+    def __init__(self, port: int = 8080, max_fps: float = 10.0, quality: int = 70, page: bytes = _PAGE,
+                 on_post: Optional[Callable[[str, dict], Optional[dict]]] = None):
+        """on_post(path, data) gets each POSTed JSON object and returns the JSON reply,
+        None for an unknown path (404), or raises ValueError/TypeError for bad input (400)."""
         if max_fps <= 0:
             raise ValueError("max_fps must be positive, got {}".format(max_fps))
         self._min_interval = 1.0 / max_fps
         self._quality = quality
+        self._page = page
+        self._on_post = on_post
         self._jpeg = None  # type: Optional[bytes]
         self._last_push = float("-inf")
         self._stopped = False
@@ -209,11 +219,31 @@ def _make_handler(server: MjpegServer):
 
         def do_GET(self):
             if self.path == "/":
-                self._send(200, "text/html; charset=utf-8", _PAGE)
+                self._send(200, "text/html; charset=utf-8", server._page)
             elif self.path == "/stream":
                 self._stream()
             else:
                 self.send_error(404)
+
+        def do_POST(self):
+            if server._on_post is None:
+                self.send_error(404)
+                return
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                if not 0 <= length <= MAX_POST_BYTES:
+                    raise ValueError("body must be 0..{} bytes".format(MAX_POST_BYTES))
+                data = json.loads(self.rfile.read(length).decode("utf-8") or "{}")
+                if not isinstance(data, dict):
+                    raise ValueError("body must be a JSON object")
+                reply = server._on_post(self.path, data)
+            except (ValueError, TypeError) as exc:  # bad JSON is a ValueError too
+                self._send(400, "application/json", json.dumps({"error": str(exc)}).encode())
+                return
+            if reply is None:
+                self.send_error(404)
+            else:
+                self._send(200, "application/json", json.dumps(reply).encode())
 
         def _send(self, code, content_type, body):
             self.send_response(code)
