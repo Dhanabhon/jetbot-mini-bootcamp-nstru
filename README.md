@@ -45,7 +45,16 @@ Bootcamp 6 ชั่วโมงสำหรับนักศึกษา ม�
 
 Notebook ทุกไฟล์เป็นแบบเติมโค้ดในช่อง `TODO` ถ้าตามไม่ทัน ให้เปิดไฟล์เฉลยของ module นั้นใน `notebooks/solutions/` แล้วไปต่อได้เลย
 
-หลังอบรม ใช้ `python3 jetbot_app.py` บนหุ่นยนต์ แล้วเปิด `http://10.42.0.1:8080` จะได้ทุก module เป็นแท็บในหน้าเว็บเดียว ตั้งแต่ตรวจเครื่อง trim จูนเส้น PID อ่านป้าย จนถึงรันทั้งภารกิจ และเพิ่มแท็บของตัวเองได้ ดูวิธีใช้ใน [notebooks/solutions/README.md](notebooks/solutions/README.md)
+## ใช้ต่อหลังอบรม
+
+`jetbot_app.py` รวมทุก module เป็นแท็บในหน้าเว็บเดียว ตั้งแต่ตรวจเครื่อง trim จูนเส้น PID อ่านป้าย จนถึงรันทั้งภารกิจ ไม่ต้องเปิด notebook ทีละไฟล์ ปิด kernel ของ notebook ทุกตัวก่อน แล้วสั่งใน Terminal ของหุ่นยนต์
+
+```bash
+cd ~/jetbot-mini-bootcamp-nstru
+python3 jetbot_app.py
+```
+
+จากนั้นเปิด `http://10.42.0.1:8080` ใน Chrome ค่าที่บันทึกจากหน้าเว็บเก็บใน `my_params.json` ไฟล์เดียวกับที่ notebook ใช้ อยากเพิ่มความสามารถเองก็เขียนแท็บใหม่ได้ ดูวิธีใช้แต่ละแท็บและตัวอย่างการเพิ่มแท็บใน [notebooks/solutions/README.md](notebooks/solutions/README.md)
 
 ## โครงสร้าง Repository
 
