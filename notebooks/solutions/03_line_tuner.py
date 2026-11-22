@@ -198,6 +198,9 @@ def main(argv=None):
                 server.push(render(frame, cfg, mask_name, fps))
         except KeyboardInterrupt:
             print("\nหยุดแล้ว ค่าที่บันทึกล่าสุดอยู่ใน {}".format(PARAMS_PATH))
+        except RuntimeError as exc:  # nvarguscamerasrc opens fine but gives no frame while another process holds the camera
+            sys.exit("{}\nกล้องอาจถูก notebook อื่นใช้อยู่: ใน Jupyter Lab เลือก Kernel > Shut Down All Kernels "
+                     "แล้วสั่ง sudo systemctl restart nvargus-daemon ก่อนรันใหม่".format(exc))
 
 
 if __name__ == "__main__":
