@@ -12,7 +12,8 @@ my_params.json
 my_params.json.tmp
 race_log.csv
 
-# Model ที่เทรนแล้ว และไฟล์ขนาดใหญ่
+# Model ที่เทรนแล้ว ภาพที่เก็บไว้เทรน และไฟล์ขนาดใหญ่
+dataset/
 *.pth
 *.onnx
 *.engine

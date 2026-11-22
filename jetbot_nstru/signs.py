@@ -69,8 +69,17 @@ def _plausible(contour, cfg: SignConfig) -> bool:
     return max(w, h) / float(max(1, min(w, h))) <= cfg.max_aspect
 
 
-def detect_sign(frame: np.ndarray, cfg: SignConfig = SignConfig()) -> Optional[Detection]:
-    """Biggest sign in the upper part of the frame, or None."""
+class SignFeatures(NamedTuple):
+    """What detect_sign measured on the biggest sign blob, for showing while tuning."""
+
+    colour: str  # "blue" or "red"
+    box: Box
+    extent: float  # contour area / box area: ~0.78 round, ~1.0 square
+    balance: Optional[float]  # top-half white (left - right) / total; None for red signs
+
+
+def sign_features(frame: np.ndarray, cfg: SignConfig = SignConfig()) -> Optional[SignFeatures]:
+    """Colour, box, extent and arrow balance of the biggest sign in the upper part of the frame, or None."""
     search = frame[: int(frame.shape[0] * cfg.search_bottom)]
     hsv = cv2.cvtColor(search, cv2.COLOR_BGR2HSV)
     blue, red = colour_masks(hsv, cfg)
@@ -84,21 +93,36 @@ def detect_sign(frame: np.ndarray, cfg: SignConfig = SignConfig()) -> Optional[D
 
     _, colour, contour = max(candidates, key=lambda item: item[0])
     x, y, w, h = cv2.boundingRect(contour)
-    box = (x, y, w, h)
-    if colour == "red":
-        return Detection(STOP, 1.0, box)
-
     extent = cv2.contourArea(contour) / float(w * h)
-    if extent >= cfg.square_extent:
-        return Detection(PARKING, min(1.0, (extent - 0.78) / (cfg.square_extent - 0.78)), box)
+    balance = None
+    if colour == "blue" and extent < cfg.square_extent:
+        balance = arrow_balance(hsv[y : y + h, x : x + w], contour - [x, y], cfg)
+    return SignFeatures(colour, (x, y, w, h), extent, balance)
 
-    balance = arrow_balance(hsv[y : y + h, x : x + w], contour - [x, y], cfg)
-    confidence = min(1.0, abs(balance) / (2 * cfg.turn_balance))
-    if balance > cfg.turn_balance:
-        return Detection(LEFT, confidence, box)
-    if balance < -cfg.turn_balance:
-        return Detection(RIGHT, confidence, box)
-    return Detection(STRAIGHT, 1.0 - confidence, box)
+
+def classify(features: SignFeatures, cfg: SignConfig = SignConfig()) -> Detection:
+    """Turn measured features into a label: red is STOP, square blue is PARKING, round blue follows the arrow."""
+    if features.colour == "red":
+        return Detection(STOP, 1.0, features.box)
+    if features.balance is None:
+        return Detection(PARKING, min(1.0, (features.extent - 0.78) / (cfg.square_extent - 0.78)), features.box)
+    confidence = min(1.0, abs(features.balance) / (2 * cfg.turn_balance))
+    if features.balance > cfg.turn_balance:
+        return Detection(LEFT, confidence, features.box)
+    if features.balance < -cfg.turn_balance:
+        return Detection(RIGHT, confidence, features.box)
+    return Detection(STRAIGHT, 1.0 - confidence, features.box)
+
+
+def detect_sign(frame: np.ndarray, cfg: SignConfig = SignConfig()) -> Optional[Detection]:
+    """Biggest sign in the upper part of the frame, or None."""
+    features = sign_features(frame, cfg)
+    return classify(features, cfg) if features else None
+
+
+def white_mask(hsv: np.ndarray, cfg: SignConfig = SignConfig()) -> np.ndarray:
+    """255 where a pixel counts as the white of an arrow (low saturation, bright)."""
+    return (((hsv[:, :, 1] < cfg.white_s_max) & (hsv[:, :, 2] > cfg.white_v_min)) * 255).astype(np.uint8)
 
 
 class SignVoter:

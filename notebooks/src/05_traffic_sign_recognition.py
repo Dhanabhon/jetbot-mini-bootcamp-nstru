@@ -155,6 +155,7 @@ for name in LABELS:
     assert detect_sign(sample_scene(name.lower())).label == name
 
 camera = CsiCamera(width=320, height=240, lock_exposure=True)
+display(view)  # แสดงภาพใต้ cell นี้ด้วย ไม่อย่างนั้นภาพจะขยับอยู่แค่ด้านบนสุดของ notebook
 start = time.monotonic()
 while time.monotonic() - start < 20:
     frame = camera.read()
@@ -193,7 +194,9 @@ for index, reading in enumerate(readings):
 # ซึ่งต้องใช้ภาพจริงจำนวนมาก cell ด้านล่างช่วยเก็บภาพ: เลือกชนิดป้าย ถือรถหรือป้ายหลายระยะหลายมุม แล้วกดถ่าย
 #
 # ภาพจะถูกเก็บใน `dataset/signs/<ชนิดป้าย>/` เก็บอย่างน้อยชนิดละ 100 ภาพ หลายสภาพแสง การเทรนทำต่อที่บ้านได้
-# (ไฟล์ model ที่ได้ไม่ถูก commit ขึ้น git ตาม `.gitignore`)
+# (ภาพและไฟล์ model ไม่ถูก commit ขึ้น git ตาม `.gitignore`)
+#
+# ถ้าจะเก็บภาพเยอะ ๆ ใช้ `solutions/05_sign_viewer.py` สะดวกกว่า: ถือรถแล้วกดปุ่มตัวเลขบนคีย์บอร์ดถ่ายได้เลย
 
 # %%
 import uuid
@@ -213,7 +216,7 @@ def save_snapshot(_):
 
 
 snap.on_click(save_snapshot)
-display(label_picker, snap, counter)
+display(label_picker, snap, counter, view)
 
 # %%
 camera.release()
