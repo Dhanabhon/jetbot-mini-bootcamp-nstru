@@ -84,7 +84,7 @@ class Oled:
     Confirmed on a JetBot Mini with `i2cdetect`: the OLED answers on bus 0, while the expansion
     board MCU (0x1B) sits on bus 1.
 
-    Run `sudo systemctl stop jetbotmini_stats` first, or the stats service overwrites the screen.
+    Run `sudo systemctl stop nstru_status jetbotmini_stats` first, or the status service overwrites the screen.
     """
 
     def __init__(self, i2c_bus: int = 0, height: int = 32):

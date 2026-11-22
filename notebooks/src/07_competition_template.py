@@ -87,7 +87,7 @@ assert abs(compensate(0.4, 6.0) - 0.4 * 1.25) < 1e-9  # จำกัดไม่
 PARAMS = PARAMS_BACKUP
 
 # %%
-!sudo systemctl stop jetbotmini_stats
+!sudo systemctl stop nstru_status jetbotmini_stats  # ตัวไหนไม่มีในเครื่อง จะขึ้น not loaded ไม่เป็นไร
 
 from jetbot_nstru.hardware import CsiCamera, Oled, beep, open_robot, read_battery_voltage
 

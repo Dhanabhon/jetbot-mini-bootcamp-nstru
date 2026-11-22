@@ -22,7 +22,7 @@ nav_order: 1
 | หยุดรถ | `robot.stop()` |
 | อ่านภาพจากกล้อง | `camera = CsiCamera(width=320, height=240)` แล้ว `frame = camera.read()` |
 | ปิดกล้อง (ก่อนเปิด notebook อื่น) | `camera.release()` |
-| แสดงข้อความบนจอ OLED | `!sudo systemctl stop jetbotmini_stats` ครั้งเดียว แล้ว `Oled().show("STOP")` |
+| แสดงข้อความบนจอ OLED | `!sudo systemctl stop nstru_status jetbotmini_stats` ครั้งเดียว แล้ว `Oled().show("STOP")` |
 | ส่งเสียง Buzzer | `beep(robot)` (ไม่ block loop) |
 | อ่านแรงดันแบต | `read_battery_voltage()` (เต็ม 12.6 V) |
 | ดูภาพ debug บนเครื่องตัวเอง | `server = MjpegServer().start()` แล้ว `server.push(draw_overlay(frame, VizState(...)))` เปิด `http://<IP>:8080` |

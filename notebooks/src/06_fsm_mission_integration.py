@@ -133,7 +133,7 @@ assert abs(test_obs.green_bottom - 236 / 240.0) < 1e-6
 # และถ้า `command.display` ไม่ใช่ `None` ให้ `oled.show(command.display)`, ถ้า `command.beep` ให้ `beep(robot)`
 
 # %%
-!sudo systemctl stop jetbotmini_stats
+!sudo systemctl stop nstru_status jetbotmini_stats  # ตัวไหนไม่มีในเครื่อง จะขึ้น not loaded ไม่เป็นไร
 
 from jetbot_nstru.hardware import CsiCamera, Oled, beep, open_robot
 

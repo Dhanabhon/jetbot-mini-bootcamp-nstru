@@ -64,14 +64,15 @@ print("แบตเตอรี่ {:.2f} V ประมาณ {:.0f}%".format(v
 # %% [markdown]
 # ## 3. จอ OLED
 #
-# จอ OLED มีโปรแกรมของ Yahboom คอยแสดง IP อยู่ ต้องหยุดโปรแกรมนั้นก่อน ไม่อย่างนั้นข้อความของเราจะถูกเขียนทับ
+# จอ OLED มีโปรแกรมคอยแสดงชื่อ Wi-Fi และ IP อยู่ (`nstru_status` ที่โปรแกรมตั้งค่าติดตั้งให้ หรือ `jetbotmini_stats` ของ Yahboom)
+# ต้องหยุดโปรแกรมนั้นก่อน ไม่อย่างนั้นข้อความของเราจะถูกเขียนทับ
 # (โปรแกรมจะกลับมาเองเมื่อเปิดเครื่องใหม่)
 #
 # **TODO:** แสดงชื่อเล่นของคุณแบบตัวใหญ่ แล้วลองแบบหลายบรรทัด (`big=False`) ให้แสดงชื่อและแรงดันแบตเตอรี่
 # ตัวใหญ่ใช้ภาษาอังกฤษเท่านั้น เพราะฟอนต์บนจอไม่มีตัวอักษรไทย
 
 # %%
-!sudo systemctl stop jetbotmini_stats
+!sudo systemctl stop nstru_status jetbotmini_stats  # ตัวไหนไม่มีในเครื่อง จะขึ้น not loaded ไม่เป็นไร
 
 from jetbot_nstru.hardware import Oled
 
@@ -129,7 +130,7 @@ from jetbot_nstru.hardware import open_robot
 
 robot = open_robot()
 print(type(robot), inspect.getsourcefile(type(robot)))
-print([name for name in dir(robot) if not name.startswith("_")])  # มี buzzer หรือไม่
+print([name for name in dir(robot) if not name.startswith("_")])  # Robot ของ Yahboom ไม่มี buzzer จึงใช้ set_buzzer() ใน hardware.py แทน
 print(inspect.getsource(type(robot))[:3000])
 
 # %% [markdown]

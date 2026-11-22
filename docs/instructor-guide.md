@@ -17,8 +17,8 @@ nav_order: 6
 - [ ] ตั้ง router ของห้องอบรม และต่อหุ่นยนต์ทุกตัวเข้า Wi-Fi นี้ไว้ล่วงหน้า ตาม[เครือข่ายในห้องอบรม](#network)
 - [ ] ทดสอบเปิดหุ่นยนต์ 3–4 ตัวพร้อมกัน และเปิดภาพกล้องใน Jupyter ทุกตัว ภาพต้องไม่กระตุกจนใช้งานไม่ได้
 - [ ] ติดสติ๊กเกอร์หมายเลขกับ IP ไว้ที่ตัวรถทุกตัว
-- [ ] ปิดโปรแกรม APP ถาวรทุกตัว: `sudo systemctl disable jetbotmini_start`
-- [ ] ตรวจ power mode เป็น MAXN: `sudo nvpmodel -q`
+- [ ] รัน `python3 tools/robot_setup.py --check-only` บนหุ่นยนต์ทุกตัว ตาม[โปรแกรมตั้งค่าหุ่นยนต์](#robot-setup) แล้วแก้ตัวที่ไม่ผ่านก่อนวันอบรม
+- [ ] คัดลอกไฟล์รหัส hotspot ลงทุกตัวพร้อมกับ repo ตาม[ไฟล์รหัส hotspot](#hotspot-conf)
 - [ ] เตรียมสาย micro USB ที่ส่งข้อมูลได้ อย่างน้อย 2–3 เส้นไว้แก้ปัญหา
 - [ ] คัดลอก repo ลงทุกตัวด้วย flash drive ตาม[คัดลอก repo ลงหุ่นยนต์](#usb-copy) และรัน notebook 01–02 ผ่าน
 - [ ] ทำ Motor Trim เบื้องต้นไว้ทุกตัว
@@ -75,7 +75,6 @@ image ของ Yahboom ตั้งให้ Wi-Fi dongle ของหุ่น
 
    ```bash
    nmcli -f NAME,TYPE,DEVICE,AUTOCONNECT con show
-   systemctl cat jetbotmini_start
    ps aux | grep -E "hostapd|create_ap|dnsmasq" | grep -v grep
    ```
 
@@ -87,7 +86,9 @@ image ของ Yahboom ตั้งให้ Wi-Fi dongle ของหุ่น
      sudo nmcli con down "<ชื่อ>"
      ```
 
-   - **service ของ Yahboom เปิด:** เจอ `hostapd` หรือ `create_ap` ทำงานอยู่ หรือ `jetbotmini_start` รัน script ที่ตั้ง AP การปิด `jetbotmini_start` ตาม checklist ก่อนวันอบรมจะปิด hotspot ไปด้วย ถ้าเป็น service ตัวอื่น ให้ปิดเฉพาะตัวนั้นด้วย `sudo systemctl disable --now <ชื่อ service>`
+   - **service อื่นเปิด:** เจอ `hostapd` หรือ `create_ap` ทำงานอยู่ ให้หาชื่อ service ด้วย `systemctl status <PID>` แล้วปิดด้วย `sudo systemctl disable --now <ชื่อ service>`
+
+   `jetbotmini_start` ไม่ได้เปิด hotspot จากโค้ดใน image ของ Yahboom ตัวนี้เป็นเพียงโปรแกรม Flask สำหรับ APP มือถือ (port 6001) และเป็นตัวที่ทำให้ Buzzer ดัง 3 ครั้งตอน boot
 
 3. reboot แล้วสแกน Wi-Fi จากมือถือ ต้องไม่เห็น `jetbot-mini` ของหุ่นยนต์ตัวนี้อีก
 
@@ -194,15 +195,68 @@ git pull /media/jetson/<ชื่อ drive>/jetbot-mini-bootcamp-nstru.bundle ma
 
 ทำก่อนผู้เข้าอบรมเริ่มแก้ notebook ถ้ามีการแก้แล้ว `git pull` อาจชนกับไฟล์ที่แก้ไว้
 
+## โปรแกรมตั้งค่าหุ่นยนต์
+{: #robot-setup }
+
+`tools/robot_setup.py` ตั้งค่าหุ่นยนต์ทีละขั้น ผู้เข้าอบรมรันเองในห้อง โดยต่อจอ HDMI คีย์บอร์ด และเมาส์ไว้ ส่วนทีมงานใช้โหมดตรวจอย่างเดียวก่อนวันอบรม ทุกขั้นตรวจก่อนว่าทำไว้แล้วหรือยัง จึงรันซ้ำได้ และใช้ซ่อมหุ่นยนต์ที่ค่าเพี้ยนได้ด้วย
+
+รันเป็น user `jetson` ไม่ต้องใส่ `sudo` โปรแกรมจะขอรหัสผ่านเอง
+
+```bash
+cd ~/jetbot-mini-bootcamp-nstru
+python3 tools/robot_setup.py
+```
+
+| ตัวเลือก | ใช้ตอนไหน |
+| :--- | :--- |
+| ไม่ใส่ | ผู้เข้าอบรมตั้งค่าครบทุกขั้นตามผู้สอน |
+| `--check-only` | ทีมงานตรวจล่วงหน้า: รันเฉพาะขั้นที่ 1 และ 9 และไม่แก้อะไรในเครื่อง |
+| `--step 7` | รันซ้ำเฉพาะขั้นที่ระบุ เช่น หลังแก้ปัญหา |
+| `--dry-run` | แสดงคำสั่งที่จะรันโดยไม่รันจริง ใช้บนคอมพิวเตอร์ได้ |
+
+ผลทุกครั้งบันทึกต่อท้ายไว้ที่ `~/robot_setup.log`
+
+| ขั้น | ทำอะไร |
+| :---: | :--- |
+| 1 | ตรวจรุ่นบอร์ด, RAM, L4T, พื้นที่ดิสก์, แบตเตอรี่, Thai font และ Wi-Fi dongle (มี `wlan0` หรือไม่ เปิด AP ได้หรือไม่ และเปิด AP ที่ช่อง 5 GHz ใดได้บ้าง) |
+| 2 | ถามหมายเลขหุ่นยนต์ ตั้ง hostname เป็น `jetbot-NN` และแก้ `/etc/hosts` แล้วบันทึกหมายเลขไว้ที่ `~/.jetbot-nstru/robot.conf` |
+| 3 | ตั้งเขตเวลาเป็น Asia/Bangkok และตั้งวันเวลาใหม่ถ้าผิด |
+| 4 | ปิด `jetbotmini_start` (APP มือถือ) และ `jetbotmini_stats` (OLED ที่ crash เมื่อไม่มี `wlan0`) ถาวร |
+| 5 | hotspot ของหุ่นยนต์แต่ละตัว **ยังไม่เปิดใช้** ขั้นนี้ยังไม่แก้อะไร |
+| 6 | ตั้ง power mode เป็น MAXN |
+| 7 | ให้ Jupyter เปิดที่ folder ของ repo โดยเขียน systemd drop-in ไว้ที่ `/etc/systemd/system/<service>.service.d/nstru.conf` ถ้าจะย้อนกลับ ให้ลบไฟล์นี้แล้วสั่ง `sudo systemctl daemon-reload` |
+| 8 | ติดตั้ง service `nstru_status`: Buzzer ดัง 3 ครั้งเมื่อ boot เสร็จ และจอ OLED แสดงชื่อ Wi-Fi รหัส IP และแบต |
+| 9 | ทดสอบกล้อง (บันทึกภาพไว้ที่ `~/setup_camera.jpg`), Buzzer, ล้อซ้ายและขวา, จอ OLED และปุ่ม KEY1 ต้องยกล้อให้ลอยก่อน |
+| 10 | สรุปผล แล้วถามว่าจะ shutdown หรือไม่ |
+
+- หลังขั้นที่ 4 Buzzer จะไม่ดัง 3 ครั้งตอน boot จนกว่าจะผ่านขั้นที่ 8 เพราะเสียงเดิมมาจาก `jetbotmini_start`
+- ขั้นที่ 9 หยุด service ที่ใช้มอเตอร์ กล้อง และจอ OLED อยู่ไว้ชั่วคราว แล้วเปิดกลับเมื่อทดสอบเสร็จ `--check-only` จึงใช้กับหุ่นยนต์ที่ยังไม่ได้ตั้งค่าได้
+- ค่าปุ่ม KEY1 (GPIO BCM 8) และ register ของ Buzzer (`0x06`) อ่านมาจากโค้ด APP ของ Yahboom ยังไม่ได้ยืนยันบนหุ่นยนต์จริง
+
+### ไฟล์รหัส hotspot
+{: #hotspot-conf }
+
+hotspot ทุกตัวใช้รหัสรูปแบบเดียวกัน แต่ห้ามเก็บรหัสไว้ใน repo เพราะ repo นี้เปิดเป็น public ให้เขียนรูปแบบรหัสไว้ 1 บรรทัดในไฟล์ `hotspot.conf` บน flash drive แล้วใส่ `{num}` ตรงที่จะให้แทนด้วยหมายเลขหุ่นยนต์ 2 หลัก เช่น รูปแบบ `abcd{num}xy` ของหุ่นยนต์หมายเลข 7 จะได้รหัส `abcd07xy` รหัสต้องยาว 8–63 ตัวอักษร
+
+คัดลอกลงหุ่นยนต์ทุกตัวในรอบเดียวกับที่[คัดลอก repo](#usb-copy)
+
+```bash
+mkdir -p ~/.jetbot-nstru
+cp /media/jetson/<ชื่อ drive>/hotspot.conf ~/.jetbot-nstru/
+chmod 600 ~/.jetbot-nstru/hotspot.conf
+```
+
+จอ OLED จะแสดงรหัสก็ต่อเมื่อหุ่นยนต์ปล่อย Wi-Fi ชื่อ `JETBOT-NN` ของตัวเองอยู่ ซึ่งต้องรอให้ขั้นที่ 5 ใช้งานได้ก่อน
+
 ## ตรวจโค้ดกับหุ่นยนต์จริง
 
 โค้ดใน `jetbot_nstru/hardware.py` เขียนจากเอกสารของ Yahboom และ NVIDIA แต่ยังไม่ได้ทดสอบกับรถจริง จุดที่ติด `VERIFY ON ROBOT` ต้องลองบนรถ 1 คันก่อนวันอบรม:
 
 - [ ] `open_robot()` import `jetbotmini.Robot` ได้ (ถ้าไม่ได้ ดูชื่อ package ใน image ของ Yahboom)
 - [ ] `CsiCamera(lock_exposure=True)` เปิดกล้องได้ ถ้า L4T เก่ากว่า 32.4 จะ fallback ไปใช้ auto exposure และขึ้น warning
-- [ ] `Oled().show("TEST")` แสดงผลหลังหยุด `jetbotmini_stats` แล้ว
+- [ ] `Oled().show("TEST")` แสดงผลหลังหยุด `nstru_status` หรือ `jetbotmini_stats` แล้ว
 - [ ] `read_battery_voltage()` ได้ค่าใกล้กับที่มิเตอร์วัด (ปรับ `BATTERY_SCALE` ถ้าต่าง)
-- [ ] `beep(robot)` มีเสียง ถ้า `robot` ไม่มี `.buzzer` ให้รัน cell สำหรับผู้สอนใน Module 1 ข้อ 5 เพื่อหาชื่อคำสั่งจริง แล้วแก้ `beep()`
+- [ ] `beep(robot)` มีเสียง `beep()` เขียนค่า 1/0 ลง register `0x06` ของบอร์ดขยาย ตามโค้ด APP ของ Yahboom (`Robot` ของ Yahboom ไม่มี `.buzzer`) ขั้นที่ 9 ของ[โปรแกรมตั้งค่า](#robot-setup)ทดสอบให้แล้ว
 - [ ] Module 4 วิ่งได้อย่างน้อย 15 FPS พร้อมเปิด stream
 
 ## แก้ notebook
@@ -226,7 +280,7 @@ notebook ทั้งในโฟลเดอร์ `notebooks/` และ `note
 
 | Module | จุดที่มักติด | แผนสำรอง |
 | :--- | :--- | :--- |
-| 1 | เปิด `http://<IP>:8888` ไม่ได้ (ต่อ Wi-Fi ผิดวง หรือ router เปิด AP isolation), จอ OLED ไม่เปลี่ยนเพราะยังไม่หยุด `jetbotmini_stats`, กล้องไม่ว่างเพราะ notebook อื่นถือไว้ | ให้นั่งคู่ 2 คนต่อรถ 1 คันจนกว่าจะต่อได้ครบ ข้าม cell OLED ไปก่อนแล้วกลับมาทำใน Module 6 แก้กล้องด้วย `sudo systemctl restart nvargus-daemon` |
+| 1 | เปิด `http://<IP>:8888` ไม่ได้ (ต่อ Wi-Fi ผิดวง หรือ router เปิด AP isolation), จอ OLED ไม่เปลี่ยนเพราะยังไม่หยุด `nstru_status`, กล้องไม่ว่างเพราะ notebook อื่นถือไว้ | ให้นั่งคู่ 2 คนต่อรถ 1 คันจนกว่าจะต่อได้ครบ ข้าม cell OLED ไปก่อนแล้วกลับมาทำใน Module 6 แก้กล้องด้วย `sudo systemctl restart nvargus-daemon` |
 | 2 | วัดระยะเบี้ยวกันนาน, รถเบี้ยวไม่เท่ากันที่ความเร็วต่างกัน, ลืมรัน cell `save_params` | ยอมรับเบี้ยวไม่เกิน 5 ซม. แล้วให้ PID ใน Module 4 ช่วยแก้ อย่างน้อยต้องบันทึก trim ไว้ แม้จะเป็น 1.0 ทั้งคู่ |
 | 3 | ค่า `black_v_max` ที่ตั้งได้ใช้ไม่ได้เมื่อแสงห้องหรือเงาเปลี่ยน, มุมก้มกล้องสูงไปจนเห็นนอกสนามใน ROI, หาสี่เหลี่ยมเขียวไม่เจอ | ใช้ `detect_line()` จาก `jetbot_nstru.line` แทนฟังก์ชันที่เขียนเอง และลอง `use_adaptive=True` ถ้าแสงไม่สม่ำเสมอ |
 | 4 | เครื่องหมายของ `steer` กลับด้านทำให้รถเลี้ยวหนีเส้น, ตั้ง `Kp` สูงจนส่าย, จูนตามภาพใน browser ที่ช้ากว่ารถจริง | ใช้ค่าในเฉลย `Kp 0.6`, `Kd 0.05` และลด `MAX_SPEED` เหลือ 0.4 ให้วิ่งจบรอบก่อน แล้วค่อยเร่ง ย้ำว่าภาพ stream ช้ากว่าจริง 0.1–0.2 วินาที |
