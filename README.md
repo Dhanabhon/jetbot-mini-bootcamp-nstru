@@ -11,13 +11,13 @@ Bootcamp 6 ชั่วโมงสำหรับนักศึกษา ม�
 | ผู้เข้าอบรม | 10 คน หุ่นยนต์คนละ 1 ตัว (แข่งแบบเดี่ยว) |
 | พื้นฐานที่ต้องมี | Python และ OpenCV เบื้องต้น |
 | วันอบรม | 1 วัน 6 ชั่วโมง (เช้า 3 ชั่วโมง, บ่าย 3 ชั่วโมง) |
-| วันแข่งขัน | 1 วัน แยกจากวันอบรม แข่งกันเองแบบเป็นกันเอง ไม่มีรางวัล |
+| วันแข่งขัน | 1 วัน แยกจากวันอบรม แข่งกันเองภายในกลุ่ม ไม่มีรางวัล |
 | ระหว่างสองวัน | นำหุ่นยนต์กลับไปพัฒนาโค้ดต่อเองได้ |
 | Platform | Yahboom JetBot Mini (NVIDIA Jetson Nano, กล้อง IMX219 77° FOV, จอ OLED) |
 | เครื่องมือ | Python, Jupyter Lab, OpenCV, PID Control, Edge AI (TensorRT / CNN) |
-| เป้าหมาย | ทุกคนมีโค้ดที่วิ่งจบภารกิจในสนามแข่งได้ด้วยตัวเอง |
+| เป้าหมาย | ทุกคนเขียนโค้ดที่พาหุ่นยนต์วิ่งจบภารกิจในสนามแข่งได้เอง |
 
-**คู่มือฉบับเว็บ:** <https://dhanabhon.github.io/jetbot-mini-bootcamp-nstru/>
+อ่านคู่มือฉบับเว็บได้ที่ <https://dhanabhon.github.io/jetbot-mini-bootcamp-nstru/>
 
 ## เริ่มต้นใช้งาน
 
@@ -27,7 +27,7 @@ Bootcamp 6 ชั่วโมงสำหรับนักศึกษา ม�
 2. เปิด Google Chrome ไปที่ `http://<IP>:8888` เพื่อเข้า Jupyter Lab (password `yahboom`)
 3. เปิด notebook ตามลำดับใน `notebooks/`
 
-## Notebook แต่ละ Module
+## Notebook แต่ละ module
 
 | Notebook | Module | เวลา |
 | :--- | :--- | :--- |
