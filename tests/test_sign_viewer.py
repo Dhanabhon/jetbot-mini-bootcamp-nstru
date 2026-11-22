@@ -1,17 +1,14 @@
 """The browser sign viewer for Module 5: photo capture, input checks and rendering."""
-import importlib.util
 import os
 
 import cv2
 import numpy as np
 import pytest
 
+from jetbot_nstru.app import signs as viewer_mod
 from jetbot_nstru.signs import sign_features
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_spec = importlib.util.spec_from_file_location("sign_viewer", os.path.join(ROOT, "notebooks", "solutions", "05_sign_viewer.py"))
-viewer_mod = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(viewer_mod)
 
 
 def scene(name, size=48):
@@ -64,8 +61,8 @@ def test_render_draws_the_sign_and_stacks_the_mask(mask):
 
 
 def test_page_lists_every_sign_folder():
-    page = viewer_mod.PAGE.decode("utf-8")
-    assert all('"{}"'.format(name) in page for name in viewer_mod.NAMES)
+    script = viewer_mod.SignPanel.script
+    assert all('"{}"'.format(name) in script for name in viewer_mod.NAMES)
 
 
 def test_describe_shows_what_decided_the_label():

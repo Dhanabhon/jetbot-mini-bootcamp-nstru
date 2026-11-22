@@ -1,17 +1,11 @@
 """The browser PID tuner for Module 4: input clamping, run/stop safety checks, saving and the control step."""
-import importlib.util
-import os
-
 import numpy as np
 import pytest
 
+from jetbot_nstru.app import pid as tuner
+from jetbot_nstru.app.core import Context, build_page
 from jetbot_nstru.line import LineResult
 from jetbot_nstru.pid import PID
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_spec = importlib.util.spec_from_file_location("pid_tuner", os.path.join(ROOT, "notebooks", "solutions", "04_pid_tuner.py"))
-tuner = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(tuner)
 
 
 class Clock:
@@ -104,6 +98,6 @@ def test_control_matches_the_notebook():
 
 
 def test_page_has_start_stop_and_heartbeat():
-    page = tuner.PAGE.decode("utf-8")
-    assert 'id="start"' in page and 'id="stop"' in page
-    assert '"/ping"' in page and 'fetch("/stop", {method: "POST", keepalive: true' in page
+    page = build_page("PID", [tuner.PidPanel(Context({}))]).decode("utf-8")
+    assert 'id="pid_start"' in page and 'id="pid_stop"' in page and "<nav" not in page  # one tab, no tab bar
+    assert '"/ping"' in page and 'fetch("/halt", {method: "POST", keepalive: true' in page

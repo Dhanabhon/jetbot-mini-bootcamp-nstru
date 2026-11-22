@@ -1,20 +1,15 @@
 """The browser tuner for Module 3: input clamping, save handling, rendering and the JSON endpoint."""
-import importlib.util
 import json
-import os
 import urllib.error
 import urllib.request
 
 import numpy as np
 import pytest
 
+from jetbot_nstru.app import line as tuner_mod
+from jetbot_nstru.app.core import App, Context, build_page
 from jetbot_nstru.line import LineConfig
 from jetbot_nstru.viz import MjpegServer
-
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_spec = importlib.util.spec_from_file_location("line_tuner", os.path.join(ROOT, "notebooks", "solutions", "03_line_tuner.py"))
-tuner_mod = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(tuner_mod)
 
 
 def test_values_are_clamped_and_typed():
@@ -62,14 +57,16 @@ def _post(base, path, body, **headers):
     return urllib.request.urlopen(request, timeout=5)
 
 
-def test_server_serves_custom_page_and_json_posts():
-    tuner = tuner_mod.Tuner(LineConfig(), save=lambda **kw: None)
-    with MjpegServer(port=0, page=tuner_mod.PAGE, on_post=tuner.handle) as server:
+def test_server_serves_the_app_page_and_json_posts():
+    panel = tuner_mod.LinePanel(Context({}, save=lambda **kw: None))
+    app = App([panel])
+    with MjpegServer(port=0, page=build_page("จูนการหาเส้นดำ", [panel]), on_post=app.handle) as server:
         base = "http://127.0.0.1:{}".format(server.port)
         assert "จูนการหาเส้นดำ".encode("utf-8") in urllib.request.urlopen(base + "/", timeout=5).read()
-        assert json.loads(_post(base, "/set", b'{"roi_top": 0.6}').read())["roi_top"] == 0.6
-        for path, body, code in (("/set", b"not json", 400), ("/set", b"[1]", 400), ("/set", b'{"kp": 1}', 400),
-                                 ("/nope", b"{}", 404)):
+        assert json.loads(_post(base, "/line/set", b'{"roi_top": 0.6}').read())["roi_top"] == 0.6
+        assert panel.ctx.line.roi_top == 0.6  # the other tabs see the new value
+        for path, body, code in (("/line/set", b"not json", 400), ("/line/set", b"[1]", 400),
+                                 ("/line/set", b'{"kp": 1}', 400), ("/line/nope", b"{}", 404), ("/nope", b"{}", 404)):
             with pytest.raises(urllib.error.HTTPError) as err:
                 _post(base, path, body)
             assert err.value.code == code
@@ -84,7 +81,7 @@ def test_server_without_on_post_refuses_posts():
 
 def test_server_refuses_posts_a_foreign_page_could_send():
     tuner = tuner_mod.Tuner(LineConfig(), save=lambda **kw: None)
-    with MjpegServer(port=0, page=tuner_mod.PAGE, on_post=tuner.handle) as server:
+    with MjpegServer(port=0, page=b"<p>tuner</p>", on_post=tuner.handle) as server:
         base = "http://127.0.0.1:{}".format(server.port)
         cases = (({"Content-Type": "text/plain"}, 415),  # a form or sendBeacon from another site
                  ({"Origin": "http://evil.example"}, 403))
@@ -105,7 +102,7 @@ def test_host_allowed_only_names_the_robot_itself(host, ok):
 
 def test_server_refuses_a_rebound_domain_on_every_request():
     tuner = tuner_mod.Tuner(LineConfig(), save=lambda **kw: None)
-    with MjpegServer(port=0, page=tuner_mod.PAGE, on_post=tuner.handle) as server:
+    with MjpegServer(port=0, page=b"<p>tuner</p>", on_post=tuner.handle) as server:
         base = "http://127.0.0.1:{}".format(server.port)
         rebound = {"Host": "evil.example:{}".format(server.port), "Origin": "http://evil.example:{}".format(server.port)}
         for request in (urllib.request.Request(base + "/", headers=rebound),
