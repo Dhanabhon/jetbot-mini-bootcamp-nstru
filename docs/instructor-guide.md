@@ -222,7 +222,7 @@ python3 tools/robot_setup.py
 | 2 | ถามหมายเลขหุ่นยนต์ ตั้ง hostname เป็น `jetbot-NN` และแก้ `/etc/hosts` แล้วบันทึกหมายเลขไว้ที่ `~/.jetbot-nstru/robot.conf` |
 | 3 | ตั้งเขตเวลาเป็น Asia/Bangkok และตั้งวันเวลาใหม่ถ้าผิด |
 | 4 | ปิด `jetbotmini_start` (APP มือถือ) และ `jetbotmini_stats` (OLED ที่ crash เมื่อไม่มี `wlan0`) ถาวร |
-| 5 | ปิดการเปิดอัตโนมัติของ hotspot `jetbotmini` เดิม แล้วสร้าง connection `nstru-hotspot` ชื่อ Wi-Fi `JETBOT-NN` รหัสจาก[ไฟล์รหัส](#hotspot-conf) ที่อยู่ `10.42.0.1` เลือกช่อง 5 GHz ถ้า dongle เปิด AP ที่นั่นได้ ถ้าเปิดไม่ขึ้นจะลองช่อง 1/6/11 แทน **ยังไม่ได้ทดสอบบนหุ่นจริง** |
+| 5 | ปิดการเปิดอัตโนมัติของ hotspot `jetbot-mini` เดิม (หาจาก connection ที่เป็น AP mode เพราะชื่อ connection ไม่ตรงกับชื่อ Wi-Fi บนหุ่นทดสอบชื่อ `Wi-Fi connection 1`) แล้วสร้าง connection `nstru-hotspot` ชื่อ Wi-Fi `JETBOT-NN` รหัสจาก[ไฟล์รหัส](#hotspot-conf) ที่อยู่ `10.42.0.1` เลือกช่อง 5 GHz ถ้า dongle เปิด AP ที่นั่นได้ ถ้าเปิดไม่ขึ้นจะลองช่อง 1/6/11 แทน ทดสอบบนหุ่นจริงแล้ว ได้ช่อง 44 (5 GHz) |
 | 6 | ตั้ง power mode เป็น MAXN |
 | 7 | ให้ Jupyter เปิดที่ folder ของ repo โดยเขียน systemd drop-in ไว้ที่ `/etc/systemd/system/<service>.service.d/nstru.conf` ถ้าจะย้อนกลับ ให้ลบไฟล์นี้แล้วสั่ง `sudo systemctl daemon-reload` |
 | 8 | ติดตั้ง service `nstru_status`: Buzzer ดัง 3 ครั้งเมื่อ boot เสร็จ และจอ OLED แสดงชื่อ Wi-Fi รหัส IP และแบต |

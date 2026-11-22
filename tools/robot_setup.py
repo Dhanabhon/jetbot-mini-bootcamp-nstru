@@ -387,10 +387,6 @@ def step_hotspot(sh: Shell) -> bool:
     ssid = ssid_for(number)
     channel = pick_channel(number, iw_ap_channels(iw_list))
     fallback = pick_channel(number, set(CHANNELS_24GHZ))
-
-    for name in other_hotspots(sh):  # keep Yahboom's jetbot-mini from coming back at boot
-        sh.run(["sudo", "nmcli", "con", "modify", name, "connection.autoconnect", "no"])
-
     keys = ",".join(key for key, _ in hotspot_settings(ssid, password, channel))
     current = nmcli_values(sh.read(["sudo", "nmcli", "-s", "-g", keys, "con", "show", HOTSPOT_CONNECTION]))
     active = sh.read(["nmcli", "-g", "GENERAL.STATE", "con", "show", HOTSPOT_CONNECTION]).strip()
@@ -402,6 +398,9 @@ def step_hotspot(sh: Shell) -> bool:
     sh.say("  จะเปิด Wi-Fi %s ที่ช่อง %d หุ่นยนต์จะหลุดจาก Wi-Fi ที่ต่ออยู่ตอนนี้" % (ssid, channel))
     if not sh.confirm("  เริ่มเลยไหม"):
         return None
+    # Yahboom's jetbot-mini AP: on the test robot it is named "Wi-Fi connection 1", so match by mode
+    for name in other_hotspots(sh):
+        sh.run(["sudo", "nmcli", "con", "modify", name, "connection.autoconnect", "no"])
     if not bring_up_hotspot(sh, ssid, password, [channel] + ([fallback] if fallback != channel else [])):
         return False
     sh.say("  ให้ notebook ต่อ Wi-Fi %s แล้วเปิด http://%s:8888" % (ssid, HOTSPOT_IP))
