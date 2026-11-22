@@ -63,7 +63,8 @@ def password_for(pattern: str, number: int) -> str:
     """Hotspot password from the staff's pattern: `{num}` in the pattern becomes the two-digit number."""
     password = pattern.strip().format(num="%02d" % number)
     if not 8 <= len(password) <= 63:
-        raise ValueError("WPA2 password must be 8-63 characters, got %d" % len(password))
+        raise ValueError("รหัส hotspot ต้องยาว 8-63 ตัวอักษรหลังแทน {num} แล้ว แต่ได้ %d ตัว "
+                         "แก้รูปแบบใน %s" % (len(password), HOTSPOT_FILE))
     return password
 
 
