@@ -1,6 +1,7 @@
 ---
 title: Cheat sheet
-nav_order: 6
+parent: เอกสารอ้างอิง
+nav_order: 1
 ---
 
 # Cheat Sheet

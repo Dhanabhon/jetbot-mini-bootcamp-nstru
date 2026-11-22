@@ -1,6 +1,7 @@
 ---
 title: สเปกเสาป้ายจราจร
-nav_order: 5
+parent: การแข่งขัน
+nav_order: 2
 ---
 
 # สเปกเสาป้ายจราจร 3D Printed

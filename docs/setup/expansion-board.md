@@ -1,7 +1,7 @@
 ---
 title: ผังบอร์ดขยาย
-parent: การเชื่อมต่อหุ่นยนต์
-nav_order: 6
+parent: เอกสารอ้างอิง
+nav_order: 3
 ---
 
 # ผังบอร์ดขยาย (Expansion board)

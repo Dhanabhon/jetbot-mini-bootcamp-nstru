@@ -1,6 +1,6 @@
 ---
 title: คู่มือผู้สอน
-nav_order: 7
+nav_order: 6
 ---
 
 # คู่มือผู้สอนและทีมจัดงาน
@@ -20,7 +20,7 @@ nav_order: 7
 - [ ] ปิดโปรแกรม APP ถาวรทุกตัว: `sudo systemctl disable jetbotmini_start`
 - [ ] ตรวจ power mode เป็น MAXN: `sudo nvpmodel -q`
 - [ ] เตรียมสาย micro USB ที่ส่งข้อมูลได้ อย่างน้อย 2–3 เส้นไว้แก้ปัญหา
-- [ ] clone repo นี้ลงทุกตัว และรัน notebook 01–02 ผ่าน
+- [ ] คัดลอก repo ลงทุกตัวด้วย flash drive ตาม[คัดลอก repo ลงหุ่นยนต์](#usb-copy) และรัน notebook 01–02 ผ่าน
 - [ ] ทำ Motor Trim เบื้องต้นไว้ทุกตัว
 - [ ] ชาร์จแบตเตอรี่เต็ม และมีแผนชาร์จช่วงพักเที่ยง
 - [ ] รัน reference solution จบสนามได้ภายใน 90 วินาที
@@ -129,10 +129,70 @@ image ของ Yahboom ตั้งให้ Wi-Fi dongle ของหุ่น
 
 ### ถ้า router ไม่ออก internet
 
-- clone repo นี้และติดตั้งทุกอย่างลงหุ่นยนต์ไว้ก่อนวันอบรม เพราะวันจริงหุ่นยนต์ดาวน์โหลดอะไรไม่ได้
+- คัดลอก repo ตาม[คัดลอก repo ลงหุ่นยนต์](#usb-copy) และติดตั้งทุกอย่างลงหุ่นยนต์ไว้ก่อนวันอบรม เพราะวันจริงหุ่นยนต์ดาวน์โหลดอะไรไม่ได้
 - แจ้งผู้เข้าอบรมให้ติดตั้ง Google Chrome และดาวน์โหลดไฟล์ที่ต้องใช้มาก่อน
 - notebook บางเครื่องเห็นว่า Wi-Fi ไม่มี internet แล้วสลับไป Wi-Fi อื่นเอง วิธีแก้อยู่ใน[ขั้นที่ 3](setup/03-wifi.md)
 - เตรียมกระดาษแผ่นใหญ่เขียนชื่อ Wi-Fi และรหัสผ่านติดไว้หน้าห้อง
+
+## คัดลอก repo ลงหุ่นยนต์ด้วย flash drive
+{: #usb-copy }
+
+ทำหลังแก้ repo เสร็จทั้งหมดแล้ว วิธีนี้ไม่ต้องให้หุ่นยนต์ออก internet ใช้ `git bundle` ซึ่งรวมทั้ง repo ไว้ในไฟล์เดียว (ประมาณ 5 MB) แล้ว clone จากไฟล์นั้นบนหุ่นยนต์
+
+- หุ่นยนต์ได้ git repo ที่สมบูรณ์ ผู้เข้าอบรมสั่ง `git checkout` คืน notebook ที่แก้จนเสียได้ ตาม[ขั้นที่ 4](setup/04-jupyter-lab.md)
+- ไม่ต้อง copy ทั้ง folder ถ้า copy ผ่าน drive แบบ FAT32 หรือ exFAT สิทธิ์ของไฟล์จะหาย และถ้า copy ด้วย `sudo` เจ้าของไฟล์จะเป็น root ทำให้ Jupyter บันทึกไฟล์ไม่ได้
+
+### เตรียม flash drive (ครั้งเดียว บนคอมพิวเตอร์ของทีมงาน)
+
+```bash
+cd jetbot-mini-bootcamp-nstru
+git pull
+git bundle create /Volumes/<ชื่อ drive>/jetbot-mini-bootcamp-nstru.bundle --all
+git bundle verify /Volumes/<ชื่อ drive>/jetbot-mini-bootcamp-nstru.bundle
+```
+
+บน Windows ใช้ path ของ drive แทน เช่น `E:/jetbot-mini-bootcamp-nstru.bundle` จด commit ล่าสุดจาก `git log --oneline -1` ไว้เทียบกับหุ่นยนต์
+
+### คัดลอกลงหุ่นยนต์ (ทำทีละตัว)
+
+1. เสียบ flash drive ที่ช่อง USB-A แล้วหาว่า drive อยู่ที่ไหน
+
+   ```bash
+   lsblk -o NAME,SIZE,LABEL,MOUNTPOINT
+   ```
+
+   ถ้าต่อจอและ login desktop อยู่ drive จะ mount เองที่ `/media/jetson/<ชื่อ drive>` ถ้าแถวของ flash drive ไม่มี MOUNTPOINT ให้ mount เอง
+
+   ```bash
+   sudo mount /dev/sdX1 /mnt
+   ```
+
+   ดูชื่อ `sdX1` จากขนาดและชื่อ drive ให้ดี หุ่นยนต์ที่ระบบหลักอยู่บน USB drive จะมี `sda` เป็นดิสก์ของระบบอยู่แล้ว flash drive จึงมักเป็น `sdb`
+
+2. clone จาก bundle ด้วยผู้ใช้ `jetson` ห้ามใช้ `sudo` แล้วชี้ origin กลับไปที่ GitHub เพื่อให้ `git pull` ได้เมื่อมี internet
+
+   ```bash
+   git clone /media/jetson/<ชื่อ drive>/jetbot-mini-bootcamp-nstru.bundle ~/jetbot-mini-bootcamp-nstru
+   cd ~/jetbot-mini-bootcamp-nstru
+   git remote set-url origin https://github.com/Dhanabhon/jetbot-mini-bootcamp-nstru.git
+   git log --oneline -1
+   ```
+
+   commit ที่ได้ต้องตรงกับที่จดไว้ ถ้าขึ้น `destination path ... already exists` แปลว่ามี folder เก่าอยู่ ให้ย้ายออกก่อนด้วย `mv ~/jetbot-mini-bootcamp-nstru ~/jetbot-mini-bootcamp-nstru.old`
+
+3. ถอด drive ถ้า mount เองให้สั่ง `sudo umount /mnt` ถ้า mount อัตโนมัติให้กด Eject ใน desktop แล้วค่อยดึงออก
+4. เปิด Jupyter Lab แล้วตรวจว่าเห็น folder `jetbot-mini-bootcamp-nstru`
+
+### อัปเดตโค้ดหลังคัดลอกไปแล้ว
+
+สร้าง bundle ใหม่ลง flash drive แล้วสั่งบนหุ่นยนต์
+
+```bash
+cd ~/jetbot-mini-bootcamp-nstru
+git pull /media/jetson/<ชื่อ drive>/jetbot-mini-bootcamp-nstru.bundle main
+```
+
+ทำก่อนผู้เข้าอบรมเริ่มแก้ notebook ถ้ามีการแก้แล้ว `git pull` อาจชนกับไฟล์ที่แก้ไว้
 
 ## ตรวจโค้ดกับหุ่นยนต์จริง
 

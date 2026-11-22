@@ -1,6 +1,7 @@
 ---
 title: กติกาการแข่งขัน
-nav_order: 4
+parent: การแข่งขัน
+nav_order: 1
 ---
 
 # โจทย์และกติกาการแข่งขัน: Smart Grid Autonomous Delivery

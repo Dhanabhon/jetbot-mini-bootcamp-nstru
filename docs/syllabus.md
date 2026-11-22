@@ -1,6 +1,6 @@
 ---
 title: ตารางอบรม
-nav_order: 3
+nav_order: 2
 ---
 
 # ตารางอบรม 6 ชั่วโมง
@@ -9,7 +9,7 @@ nav_order: 3
 
 แต่ละ module มี notebook ของตัวเองใน `notebooks/` เลขบทในวงเล็บอ้างอิงบทเรียนของ Yahboom
 
-บรรทัด **โค้ด:** ท้ายแต่ละ module ลิงก์ไปที่ notebook ที่ใช้ในห้อง (มีช่อง `TODO`), เฉลย และไฟล์ใน `jetbot_nstru/` ที่ module นั้นเรียกใช้ ลิงก์เปิดบน GitHub ไว้อ่านล่วงหน้า ตอนอบรมให้เปิด notebook ผ่าน Jupyter Lab บนหุ่นยนต์
+บรรทัด **โค้ด:** ท้ายแต่ละ module ลิงก์ไปที่ notebook ที่ใช้ในห้อง (มีช่อง `TODO`), เฉลย และไฟล์ใน `jetbot_nstru/` ที่ module นั้นเรียกใช้ ลิงก์เปิดบน GitHub ไว้อ่านล่วงหน้า ตอนอบรมให้เปิด notebook ผ่าน Jupyter Lab บนหุ่นยนต์ ซึ่งทีมงานคัดลอกไว้ที่ `~/jetbot-mini-bootcamp-nstru/notebooks/` แล้ว
 
 สไลด์ที่ใช้บรรยายตลอดวัน เรียงตาม module เดียวกับตารางนี้: [ดาวน์โหลดสไลด์ (PDF)]({{ '/assets/slides/jetbot-mini-bootcamp-lecture.pdf' | relative_url }})
 

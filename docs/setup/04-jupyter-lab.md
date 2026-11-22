@@ -56,20 +56,25 @@ sudo nvpmodel -q        # ดูโหมดปัจจุบัน
 sudo nvpmodel -m0       # เปลี่ยนเป็น MAXN
 ```
 
-## นำโค้ดของ bootcamp ลงหุ่นยนต์
+## เปิดโค้ดของ bootcamp
 
-ในวันอบรม ทีมงาน clone ไว้ให้ทุกตัวแล้ว ถ้าแถบไฟล์ด้านซ้ายมี folder `jetbot-mini-bootcamp-nstru` อยู่แล้ว ข้ามส่วนนี้ได้
+ทีมงานคัดลอกโค้ดลงหุ่นยนต์ทุกตัวไว้แล้วที่ `~/jetbot-mini-bootcamp-nstru` ไม่ต้องดาวน์โหลดเพิ่ม และไม่ต้องใช้ internet
 
-ถ้ายังไม่มี ให้สั่งใน Terminal ของ Jupyter Lab
+1. ที่แถบไฟล์ด้านซ้ายของ Jupyter Lab เปิด folder `jetbot-mini-bootcamp-nstru` แล้วเข้า `notebooks`
+2. เปิด notebook ตาม Module ที่บรรยายอยู่ เริ่มที่ `01_setup_first_trial.ipynb`
+
+ถ้าไม่เห็น folder นี้ ให้แจ้งทีมงาน
+
+### แก้ notebook จนเสีย อยากเริ่มใหม่
+
+เปิด Terminal ใน Jupyter Lab แล้วสั่งคำสั่งนี้ (เปลี่ยนชื่อไฟล์ให้ตรงกับ notebook ที่ต้องการ) notebook จะกลับเป็นฉบับเริ่มต้น **ทุกอย่างที่แก้ไว้ในไฟล์นั้นจะหายหมด**
 
 ```bash
-cd ~
-git clone https://github.com/Dhanabhon/jetbot-mini-bootcamp-nstru.git
+cd ~/jetbot-mini-bootcamp-nstru
+git checkout -- notebooks/01_setup_first_trial.ipynb
 ```
 
-จากนั้นเปิด folder `jetbot-mini-bootcamp-nstru/notebooks` จากแถบด้านซ้าย แล้วเริ่มที่ `01_setup_first_trial.ipynb`
-
-หุ่นยนต์ต้องออก internet ได้จึงจะ clone ได้ Wi-Fi ของห้องอบรมอาจไม่มี internet ถ้า clone ไม่ได้ ให้ใช้วิธีส่งไฟล์ด้านล่าง หรือแจ้งทีมงาน
+ปิด notebook นั้นใน Jupyter Lab ก่อนสั่ง แล้วเปิดใหม่หลังสั่ง ไม่อย่างนั้น Jupyter อาจบันทึกฉบับเก่าทับ
 
 ## ส่งไฟล์ระหว่างคอมพิวเตอร์กับหุ่นยนต์
 
