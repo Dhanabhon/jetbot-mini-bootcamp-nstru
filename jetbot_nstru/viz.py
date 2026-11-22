@@ -48,12 +48,24 @@ class VizState(NamedTuple):
 
 
 def hud_lines(state: VizState) -> List[str]:
-    """Text rows for the top-left HUD. ASCII only: cv2.putText cannot draw Thai."""
-    # TODO(instructor): choose which numbers trainees need on screen while tuning.
-    lines = []
+    """Text rows for the top-left HUD. ASCII only: cv2.putText cannot draw Thai.
+
+    At most two short rows, so the HUD does not cover signs in the top of the frame.
+    Line error and sign label are drawn next to the centroid and sign box instead.
+    """
+    status = []
     if state.fsm_state:
-        lines.append("state: " + state.fsm_state)
-    return lines
+        status.append(state.fsm_state)
+    if state.fps is not None:
+        status.append("{:.0f} fps".format(state.fps))
+    control = []
+    if state.steer is not None:
+        control.append("steer {:+.2f}".format(state.steer))
+    if state.motor_left is not None:
+        control.append("L {:.2f}".format(state.motor_left))
+    if state.motor_right is not None:
+        control.append("R {:.2f}".format(state.motor_right))
+    return ["  ".join(row) for row in (status, control) if row]
 
 
 def draw_overlay(frame: np.ndarray, state: VizState) -> np.ndarray:

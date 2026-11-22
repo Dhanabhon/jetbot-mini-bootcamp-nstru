@@ -3,7 +3,7 @@ import urllib.request
 import numpy as np
 import pytest
 
-from jetbot_nstru.viz import Detection, MjpegServer, VizState, draw_overlay, with_mask
+from jetbot_nstru.viz import Detection, MjpegServer, VizState, draw_overlay, hud_lines, with_mask
 
 FRAME = np.full((240, 320, 3), 180, dtype=np.uint8)
 ROI = (0, 160, 320, 80)
@@ -66,3 +66,13 @@ def test_serves_page_and_jpeg_stream():
     assert b'src="/stream"' in page
     assert b"--frame" in chunk
     assert b"\xff\xd8" in chunk  # JPEG start-of-image marker
+
+
+def test_hud_shows_state_fps_and_control_in_two_rows():
+    state = VizState(fsm_state="FOLLOW", fps=12.4, steer=0.213, motor_left=0.45, motor_right=0.312)
+    assert hud_lines(state) == ["FOLLOW  12 fps", "steer +0.21  L 0.45  R 0.31"]
+
+
+def test_hud_hides_missing_fields():
+    assert hud_lines(VizState()) == []
+    assert hud_lines(VizState(steer=-0.5)) == ["steer -0.50"]
