@@ -11,10 +11,10 @@ nav_order: 4
 ## เปิด Jupyter Lab
 
 1. เปิด **Google Chrome** (Yahboom ระบุว่า browser อื่นใช้งานได้ไม่ดี หรือ login ไม่ได้)
-2. พิมพ์ที่ address bar โดยใช้ IP จากจอ OLED
+2. พิมพ์ที่ address bar โดยใช้ IP จากสติ๊กเกอร์ที่ตัวรถ หรือจอ OLED
 
    ```text
-   http://192.168.1.196:8888
+   http://192.168.0.101:8888
    ```
 
 3. ใส่ password `yahboom`
@@ -60,7 +60,9 @@ sudo nvpmodel -m0       # เปลี่ยนเป็น MAXN
 
 ## นำโค้ดของ bootcamp ลงหุ่นยนต์
 
-ใน Terminal ของ Jupyter Lab
+ในวันอบรม ทีมงาน clone ไว้ให้ทุกตัวแล้ว ถ้าแถบไฟล์ด้านซ้ายมี folder `jetbot-mini-bootcamp-nstru` อยู่แล้ว ข้ามส่วนนี้ได้
+
+ถ้ายังไม่มี ให้สั่งใน Terminal ของ Jupyter Lab
 
 ```bash
 cd ~
@@ -69,7 +71,7 @@ git clone https://github.com/Dhanabhon/jetbot-mini-bootcamp-nstru.git
 
 จากนั้นเปิด folder `jetbot-mini-bootcamp-nstru/notebooks` จากแถบด้านซ้าย แล้วเริ่มที่ `01_setup_first_trial.ipynb`
 
-หุ่นยนต์ต้องออก internet ได้จึงจะ clone ได้ ถ้า Wi-Fi ห้องอบรมไม่มี internet ให้ใช้วิธีส่งไฟล์ด้านล่าง
+หุ่นยนต์ต้องออก internet ได้จึงจะ clone ได้ Wi-Fi ของห้องอบรมอาจไม่มี internet ถ้า clone ไม่ได้ ให้ใช้วิธีส่งไฟล์ด้านล่าง หรือแจ้งทีมงาน
 
 ## ส่งไฟล์ระหว่างคอมพิวเตอร์กับหุ่นยนต์
 
@@ -98,10 +100,10 @@ git clone https://github.com/Dhanabhon/jetbot-mini-bootcamp-nstru.git
 
 ```powershell
 # ส่งไฟล์ไปหุ่นยนต์ (ไฟล์อยู่ใน folder ที่ Terminal เปิดอยู่)
-scp .\my_robot.py jetson@192.168.1.196:~/
+scp .\my_robot.py jetson@192.168.0.101:~/
 
 # เอาไฟล์จากหุ่นยนต์มาไว้ที่ Downloads
-scp jetson@192.168.1.196:~/my_robot.py $HOME\Downloads\
+scp jetson@192.168.0.101:~/my_robot.py $HOME\Downloads\
 ```
 
 </div>
@@ -114,10 +116,10 @@ scp jetson@192.168.1.196:~/my_robot.py $HOME\Downloads\
 
 ```bash
 # ส่งไฟล์ไปหุ่นยนต์
-scp my_robot.py jetson@192.168.1.196:~/
+scp my_robot.py jetson@192.168.0.101:~/
 
 # เอาไฟล์จากหุ่นยนต์มาไว้ที่ Downloads
-scp jetson@192.168.1.196:~/my_robot.py ~/Downloads/
+scp jetson@192.168.0.101:~/my_robot.py ~/Downloads/
 ```
 
 พิมพ์ path ไม่ถูก ให้ลากไฟล์จาก Finder มาวางในหน้าต่าง Terminal ระบบจะใส่ path ให้เอง
