@@ -1,0 +1,20 @@
+<section id="m2" class="mod">
+<div class="mod-side">
+<p class="eyebrow">MODULE</p>
+<p class="mod-num">02</p>
+<h2>ควบคุมล้อซ้าย-ขวา</h2>
+<p class="mod-en">Hardware &amp; Differential Drive Control</p>
+<p class="mod-meta">09:45–10:30 · 45 นาที</p>
+<p class="mod-file">02_motor_control_calibration.ipynb</p>
+</div>
+<div class="mod-main">
+<p class="label" style="margin-bottom:16px;">ใน notebook</p>
+<div class="srow in" style="--i:0;"><p class="sn">1</p><p class="st">สั่งเดินหน้า ถอยหลัง เลี้ยว ด้วย <span class="mono">robot.set_motors(left, right)</span></p></div>
+<div class="srow in" style="--i:1;"><p class="sn">2</p><p class="st">ทดสอบวิ่งตรงที่ความเร็วสูงสุด แล้วดูว่ารถเบี้ยวไปทางไหน</p></div>
+<div class="srow in" style="--i:2;"><p class="sn">3</p><p class="st">หาค่า Motor Trim ชดเชยล้อที่หมุนเร็วกว่า</p></div>
+<div class="srow in" style="--i:3;"><p class="sn">4</p><p class="st">บันทึกค่า trim ไว้ใช้ใน module ถัดไป</p></div>
+<div class="done in" style="--i:4;"><p class="label">เสร็จเมื่อ</p><p class="dt">รถวิ่งตรงที่ความเร็วสูงสุดโดยไม่เบี้ยว และมีค่า trim ของรถตัวเอง</p></div>
+</div>
+<div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
+<aside>อ้างอิงบท 6.1 ของ Yahboom อธิบาย differential drive: ล้อซ้ายเร็วกว่าขวา รถเลี้ยวขวา มอเตอร์ TT Gear แต่ละตัวเร็วไม่เท่ากันจากโรงงาน จึงต้องมีค่า trim ของรถแต่ละคัน ให้ทุกคนจดค่าไว้ เพราะ PID ใน Module 4 จะใช้ต่อ</aside>
+</section>

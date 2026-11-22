@@ -1,0 +1,51 @@
+<section id="pipeline" class="alt">
+<div class="head">
+<p class="eyebrow">Module 3 · OpenCV</p>
+<h2>จากภาพหนึ่งเฟรม ถึงคำสั่งล้อ</h2>
+</div>
+<div style="flex:1;"></div>
+<div class="flow">
+<div class="step in" style="--i:0;">
+<p class="n">1</p>
+<h3>กล้อง</h3>
+<p>ก้มมุมกล้อง (pitch) ให้เห็นถนนข้างหน้า</p>
+</div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step in" style="--i:1;">
+<p class="n">2</p>
+<h3>ROI</h3>
+<p>ตัดเหลือแถบพื้นถนน ภาพเล็กลง FPS สูงขึ้น</p>
+</div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step in" style="--i:2;">
+<p class="n">3</p>
+<h3>HSV / Threshold</h3>
+<p>แยกเส้นดำ และสี่เหลี่ยมสีเขียว สู้แสงสะท้อนไวนิล</p>
+</div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step in" style="--i:3;">
+<p class="n">4</p>
+<h3>Centroid</h3>
+<p>หาจุดกลางเส้น <span class="mono">cx</span> เทียบกับกลางภาพ</p>
+</div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step go in" style="--i:4;">
+<p class="n">5</p>
+<h3>PID → ล้อ</h3>
+<p><span class="mono">set_motors()</span> ตามค่า error</p>
+</div>
+</div>
+<div class="row in" style="--i:5;">
+<div class="card" style="padding:32px 40px;">
+<p class="k">ทำไมต้อง ROI</p>
+<p class="body">ยิ่งประมวลผลพิกเซลน้อย ยิ่งรอบต่อวินาทีสูง รถวิ่งเร็วได้โดยไม่หลุดโค้ง</p>
+</div>
+<div class="card" style="padding:32px 40px;">
+<p class="k">สีเขียวคือสัญญาณ</p>
+<p class="body">สี่เหลี่ยมสีเขียวบอกว่าถึงจุดตัด เป็นจังหวะที่ต้องตัดสินใจตามป้าย</p>
+</div>
+</div>
+<div style="flex:1;"></div>
+<div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
+<aside>ให้ทุกคนเปิดภาพจากกล้องจริงแล้วลากกรอบ ROI ดูเอง ลองเปลี่ยนจาก threshold ธรรมดาเป็น Adaptive Threshold เมื่อเจอแสงสะท้อนบนพื้นไวนิล แล้วโชว์ค่า cx ที่เปลี่ยนเมื่อขยับรถซ้ายขวา</aside>
+</section>

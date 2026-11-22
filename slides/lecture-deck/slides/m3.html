@@ -1,0 +1,21 @@
+<section id="m3" class="mod">
+<div class="mod-side">
+<p class="eyebrow">MODULE</p>
+<p class="mod-num">03</p>
+<h2>ตรวจจับเส้นด้วย OpenCV</h2>
+<p class="mod-en">High-Speed Line Detection with OpenCV</p>
+<p class="mod-meta">10:30–11:15 · 45 นาที</p>
+<p class="mod-file">03_line_detection_opencv.ipynb</p>
+</div>
+<div class="mod-main">
+<p class="label" style="margin-bottom:16px;">ใน notebook</p>
+<div class="srow in" style="--i:0;"><p class="sn">1</p><p class="st">อ่านภาพจากกล้อง และปิด Auto Exposure</p></div>
+<div class="srow in" style="--i:1;"><p class="sn">2</p><p class="st">ตั้งมุมก้มกล้อง แล้วตัด ROI ให้เหลือแต่พื้นถนน</p></div>
+<div class="srow in" style="--i:2;"><p class="sn">3</p><p class="st">ทำ mask เส้นดำด้วย HSV หรือ Adaptive Threshold</p></div>
+<div class="srow in" style="--i:3;"><p class="sn">4</p><p class="st">หา centroid ของเส้น <span class="mono">cx</span></p></div>
+<div class="srow in" style="--i:4;"><p class="sn">5</p><p class="st">ตรวจจับสี่เหลี่ยมสีเขียวที่จุดตัด</p></div>
+<div class="done in" style="--i:5;"><p class="label">เสร็จเมื่อ</p><p class="dt">ค่า <span class="mono">cx</span> เปลี่ยนตามตำแหน่งเส้น และรู้ทันทีเมื่อเจอจุดเขียว</p></div>
+</div>
+<div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
+<aside>อ้างอิงบท 4.2 และ 10.1 ของ Yahboom ปิด Auto Exposure เพราะถ้ากล้องปรับแสงเอง threshold ที่จูนไว้จะเพี้ยนเมื่อรถหันเข้าหาแสง ขั้นตอนทั้งหมดเป็นภาพอยู่ในสไลด์ถัดไป</aside>
+</section>

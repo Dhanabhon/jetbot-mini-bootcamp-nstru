@@ -1,0 +1,145 @@
+:root {
+  --ink: #14161a;
+  --paper: #fbfbf8;
+  --field: #f1f2ec;
+  --rule: #dcded6;
+  --text: #3a3f48;
+  --muted: #5d636d;
+  --blue: #0b5cad;
+  --blue-soft: #dce9f7;
+  --green: #1a7f3d;
+  --green-soft: #ddf0e2;
+  --red: #b3261e;
+  --on-dark: #c9d9ee;
+  --sans: 'Google Sans', Tahoma, sans-serif;
+  --mono: 'Google Sans Code', 'Courier New', monospace;
+}
+
+body { font-family: var(--sans); color: var(--text); }
+
+section {
+  counter-increment: page;
+  padding: 128px 128px 160px;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-sizing: border-box;
+}
+section.alt { background: var(--field); }
+section.dark { background: var(--ink); color: var(--on-dark); }
+section.accent { background: var(--blue); color: #f3f7fc; }
+
+h1, h2, h3 { font-family: var(--sans); color: var(--ink); margin: 0; }
+h1 { font-size: 112px; font-weight: 700; line-height: 1.15; }
+h2 { font-size: 64px; font-weight: 700; line-height: 1.25; }
+h3 { font-size: 40px; font-weight: 600; line-height: 1.3; }
+p { margin: 0; font-size: 30px; line-height: 1.55; }
+.dark h1, .dark h2, .dark h3 { color: #f4f5f0; }
+.accent h1, .accent h2, .accent h3 { color: #ffffff; }
+
+.eyebrow { font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--blue); }
+.dark .eyebrow { color: #7fb2e8; }
+.accent .eyebrow { color: #cfe1f5; }
+.lead { font-size: 36px; line-height: 1.5; color: var(--text); }
+.dark .lead { color: var(--on-dark); }
+.accent .lead { color: #e3eefa; }
+.small { font-size: 24px; line-height: 1.5; color: var(--muted); }
+.dark .small { color: #9aa6b5; }
+.mono { font-family: var(--mono); }
+
+.head { display: flex; flex-direction: column; gap: 16px; }
+
+/* footer: course name + page number */
+.foot {
+  position: absolute; left: 128px; bottom: 64px; width: 1664px;
+  display: flex; justify-content: space-between;
+}
+.foot p { font-size: 24px; color: var(--muted); }
+.dark .foot p { color: #8c97a6; }
+.accent .foot p { color: #bcd3ee; }
+.pnum::after { content: counter(page); }
+
+/* cards */
+.row { display: flex; gap: 32px; }
+.row > * { flex: 1; }
+.card {
+  background: #ffffff; border: 2px solid var(--rule); border-radius: 20px;
+  padding: 40px; display: flex; flex-direction: column; gap: 16px;
+}
+.alt .card { border-color: #d3d6cc; }
+.card .k { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; color: var(--blue); }
+.card .big { font-size: 64px; font-weight: 700; line-height: 1.1; color: var(--ink); }
+.card .body { font-size: 28px; line-height: 1.5; color: var(--text); }
+.dark .card { background: #1f2329; border-color: #343a43; }
+.dark .card .big { color: #f4f5f0; }
+.dark .card .body { color: var(--on-dark); }
+.dark .card .k { color: #7fb2e8; }
+
+/* tables */
+table { font-family: var(--sans); font-size: 30px; color: var(--text); width: 100%; }
+th { font-weight: 700; color: var(--ink); text-align: left; padding: 22px 24px; }
+td { text-align: left; padding: 22px 24px; }
+tr.thead { background: var(--rule); }
+
+/* code */
+.code {
+  background: var(--ink); border-radius: 20px; padding: 40px 48px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.code p { font-family: var(--mono); font-size: 30px; line-height: 1.6; color: #e6e8e3; white-space: nowrap; }
+.code .c { color: #8fa0b3; font-family: var(--sans); }
+
+/* pipeline steps */
+.flow { display: flex; align-items: center; gap: 0; }
+.step {
+  flex: 1; align-self: stretch; background: #ffffff; border: 2px solid var(--rule); border-radius: 20px;
+  padding: 32px 28px; display: flex; flex-direction: column; gap: 12px;
+}
+.step .n { font-size: 24px; font-weight: 700; color: var(--blue); }
+.step h3 { font-size: 36px; }
+.step p { font-size: 26px; line-height: 1.5; }
+.step.go { background: var(--blue); border-color: var(--blue); }
+.step.go h3, .step.go p { color: #ffffff; }
+.step.go .n { color: #cfe1f5; }
+.arrow { width: 40px; height: 24px; flex: none; margin: 0 12px; background: #9aa1ab; }
+
+/* sign chips */
+.sign {
+  width: 120px; height: 120px; flex: none; border-radius: 16px; background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+}
+.sign p { font-size: 64px; font-weight: 700; color: #ffffff; line-height: 1; }
+.sign.stop { background: var(--red); border-radius: 36px; }
+.sign.stop p { font-size: 30px; letter-spacing: 1px; }
+.sign.park { background: #ffffff; border: 4px solid var(--blue); box-sizing: border-box; }
+.sign.park p { color: var(--blue); }
+
+/* pills */
+.pill {
+  display: inline-block; background: var(--green-soft); color: var(--green);
+  font-size: 24px; font-weight: 700; padding: 8px 20px; border-radius: 999px;
+}
+.pill.bad { background: #f7e1df; color: var(--red); }
+.pill.blue { background: var(--blue-soft); color: var(--blue); }
+
+/* module slides: one per module, same layout */
+section.mod { flex-direction: row; gap: 96px; }
+.mod-side { width: 560px; flex: none; display: flex; flex-direction: column; gap: 16px; padding-right: 64px; border-right: 2px solid var(--rule); }
+.mod-num { font-size: 200px; font-weight: 700; line-height: 1; color: var(--blue); }
+.mod-side h2 { font-size: 56px; line-height: 1.3; }
+.mod-en { font-size: 24px; color: var(--muted); }
+.mod-meta { font-size: 28px; font-weight: 600; color: var(--ink); }
+.mod-file { font-family: var(--mono); font-size: 24px; color: var(--muted); }
+.mod-main { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.label { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; color: var(--blue); }
+.srow { display: flex; gap: 28px; align-items: baseline; padding: 20px 0; border-top: 2px solid var(--rule); }
+.srow .sn { width: 40px; flex: none; font-size: 28px; font-weight: 700; color: var(--blue); }
+.srow .st { flex: 1; font-size: 32px; line-height: 1.45; color: var(--ink); }
+.done { margin-top: 28px; background: var(--green-soft); border-radius: 20px; padding: 28px 36px; display: flex; flex-direction: column; gap: 8px; }
+.done .label { color: var(--green); }
+.done .dt { font-size: 30px; line-height: 1.45; color: var(--ink); }
+
+/* arrival motion */
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+.in { animation: rise 600ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 110ms); }

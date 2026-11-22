@@ -1,0 +1,17 @@
+<section id="morning">
+<div class="head">
+<p class="eyebrow">ช่วงเช้า · 09:00–12:00</p>
+<h2>เชื่อมต่อแล้วเดินตามเส้นความเร็วสูง</h2>
+</div>
+<table class="in" style="--i:1;">
+<tr class="thead"><th style="width:18%;">เวลา</th><th style="width:34%;">Module</th><th>ลงมือทำ</th></tr>
+<tr><td>09:00–09:45</td><td>1 · System &amp; First Trial</td><td>ตรวจ hardware เข้า Jupyter Lab เช็กแบต ทดสอบจอ OLED</td></tr>
+<tr><td>09:45–10:30</td><td>2 · Differential Drive</td><td><span class="mono">robot.set_motors(left, right)</span> และ Motor Trim ให้รถวิ่งตรง</td></tr>
+<tr><td>10:30–11:15</td><td>3 · Line Detection</td><td>ตั้งมุมกล้อง ตัด ROI แปลง HSV หา centroid และสี่เหลี่ยมสีเขียว</td></tr>
+<tr><td>11:15–12:00</td><td>4 · PID Tuning</td><td>แปลง error เป็นความต่างความเร็วล้อ ทางตรงเร่ง เข้าโค้งชะลอ</td></tr>
+</table>
+<div style="flex:1;"></div>
+<p class="small in" style="--i:2;">เป้าหมาย: ควบคุมมอเตอร์และกล้องผ่าน Jupyter Lab ได้ และมีระบบเดินตามเส้นที่จูน PID แล้ว · แต่ละ module มี notebook ของตัวเองใน notebooks/</p>
+<div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
+<aside>เลขบทของ Yahboom ที่อ้างอิง: Module 1 บท 2.2, 3.1, 4.1, 5.4, 5.5 · Module 2 บท 6.1 · Module 3 บท 4.2, 10.1 · Module 4 บท 6.6 ถ้าใครเสร็จก่อน ให้ลองเพิ่มความเร็วแล้วจูน Kp ใหม่</aside>
+</section>
