@@ -6,8 +6,6 @@ nav_order: 4
 
 # ขั้นที่ 4: เข้า Jupyter Lab และเตรียมพร้อมเขียนโค้ด
 
-{% include os-switch.html %}
-
 ## เปิด Jupyter Lab
 
 1. เปิด **Google Chrome** (Yahboom ระบุว่า browser อื่นใช้งานได้ไม่ดี หรือ login ไม่ได้)

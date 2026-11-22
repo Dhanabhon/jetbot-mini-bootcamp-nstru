@@ -30,8 +30,10 @@
     if (event.key === KEY) apply(event.newValue || root.dataset.osDetected);
   });
 
+  // the picker lives in the site header, so show it only on pages that have per-OS steps
+  var hasOsContent = document.querySelector("main [data-os]") !== null;
   document.querySelectorAll(".os-switch").forEach(function (el) {
-    el.hidden = false;
+    el.hidden = !hasOsContent;
   });
   if (root.dataset.os) apply(root.dataset.os); // else head script didn't run: keep both OS blocks visible
 })();

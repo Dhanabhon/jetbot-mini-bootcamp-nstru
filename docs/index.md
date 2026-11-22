@@ -24,8 +24,6 @@ nav_order: 1
 
 ## ตรวจคอมพิวเตอร์ก่อนวันอบรม
 
-{% include os-switch.html %}
-
 <div data-os="windows" markdown="1">
 
 1. กด `Win + X` แล้วเลือก **Terminal** หรือ **Windows PowerShell**

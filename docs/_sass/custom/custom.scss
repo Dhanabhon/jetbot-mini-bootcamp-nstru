@@ -304,6 +304,44 @@ html[data-os="mac"] [data-os="windows"] {
   }
 }
 
+// in the site header (via _includes/header_custom.html): compact, centred, pushed right before the aux links
+.main-header .os-switch {
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0 0 0 auto;
+  padding: 0 $sp-4;
+  white-space: nowrap;
+
+  legend {
+    font-size: 0.8125rem;
+    line-height: 2.25rem;
+  }
+
+  .os-switch-options span {
+    padding: 0.3rem 0.85rem;
+    font-size: 0.875rem;
+  }
+}
+
+// below md the theme hides .main-header behind the menu button; on pages with per-OS steps keep
+// a slim bar with just the picker, so phone readers can still see and change which OS they follow
+@media (max-width: 49.99rem) {
+  .main-header:not(.nav-open):has(.os-switch:not([hidden])) {
+    display: flex;
+    justify-content: center;
+    padding: $sp-2 0;
+
+    .search,
+    .aux-nav {
+      display: none;
+    }
+
+    .os-switch {
+      margin: 0;
+    }
+  }
+}
+
 // a radio group, not a switch: it picks one of two values rather than turning something on/off
 .os-switch-options {
   display: inline-flex;
