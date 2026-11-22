@@ -1,0 +1,19 @@
+<section id="troubleshoot">
+<div class="head">
+<p class="eyebrow">ติดขัดระหว่างทาง</p>
+<h2>ปัญหาที่เจอบ่อย ลองแก้เองก่อนยกมือ</h2>
+</div>
+<div style="flex:1;"></div>
+<table class="in" style="--i:0;">
+<tr class="thead"><th style="width:40%;">อาการ</th><th>ลองทำ</th></tr>
+<tr><td>ssh ขึ้น REMOTE HOST IDENTIFICATION HAS CHANGED</td><td><span class="mono">ssh-keygen -R 192.168.55.1</span> แล้วต่อใหม่</td></tr>
+<tr><td>ssh ขึ้น timed out หรือ refused</td><td><span class="mono">ping</span> IP ก่อน ถ้าไม่ผ่าน ให้เช็กว่าคอมพิวเตอร์ยังต่อ Wi-Fi ห้องอยู่</td></tr>
+<tr><td>เปิดหน้า :8888 ไม่ขึ้น</td><td>ใช้ Chrome พิมพ์ http:// ไม่ใช่ https:// แล้วเทียบ IP กับจอ OLED</td></tr>
+<tr><td>กล้องไม่มีภาพ หรือภาพกะพริบ</td><td>Shut Down Kernel ของ notebook อื่นที่เปิดกล้องค้างไว้</td></tr>
+<tr><td>สั่งมอเตอร์แล้วไม่วิ่ง หรือวิ่งเอง</td><td>ยังไม่ได้ปิด <span class="mono">jetbotmini_start</span> ดูหน้าก่อนหน้า</td></tr>
+</table>
+<p class="small in" style="--i:1;">วิธีแก้ทั้งหมด แยก Windows และ macOS อยู่ในหน้า "แก้ปัญหาการเชื่อมต่อ" บนเว็บคู่มือ</p>
+<div style="flex:1;"></div>
+<div class="foot"><p>JetBot Mini Bootcamp @ NSTRU</p><p class="pnum"></p></div>
+<aside>ถ้ากล้องยังไม่หายหลังปิด kernel ให้ restart Jupyter Lab ผ่าน SSH ด้วย sudo systemctl stop jetbotmini_jupyter แล้ว start แล้ว refresh หน้าเว็บ ปัญหา host key เจอบ่อยตอนสลับหุ่นยนต์แล้วต่อผ่าน USB เพราะทุกคันใช้ 192.168.55.1 เหมือนกัน ถ้าต่อผ่าน Wi-Fi ให้เปลี่ยนเป็น IP ของคันนั้น</aside>
+</section>

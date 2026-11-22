@@ -140,6 +140,11 @@ section.mod { flex-direction: row; gap: 96px; }
 .done .label { color: var(--green); }
 .done .dt { font-size: 30px; line-height: 1.45; color: var(--ink); }
 
+/* step rows on dark slides */
+.dark .srow { border-top-color: #343a43; }
+.dark .srow .st { color: #f4f5f0; }
+.dark .srow .sn { color: #7fb2e8; }
+
 /* arrival motion */
 @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
 .in { animation: rise 600ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 110ms); }

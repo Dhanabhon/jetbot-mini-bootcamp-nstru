@@ -4,7 +4,7 @@ slide ประกอบการสอน แยกไฟล์ตาม module
 
 ## สไลด์บรรยายสำหรับวิทยากร
 
-`lecture-deck/` เก็บต้นฉบับสไลด์บรรยาย 23 หน้า (ฟอนต์ Google Sans) ที่สร้างใน Claude Slides
+`lecture-deck/` เก็บต้นฉบับสไลด์บรรยาย 28 หน้า (ฟอนต์ Google Sans) ที่สร้างใน Claude Slides
 
 - เปิดดูและนำเสนอ: <https://claude.ai/artifact/XKu2n6Nyc2n9MxyhGNdRVB> (เปิดได้เฉพาะคนที่เจ้าของแชร์ให้)
 - `deck.json` ลำดับสไลด์และ section, `deck.css` สไตล์ที่ใช้ร่วมกัน, `slides/<id>.html` สไลด์ละไฟล์ พร้อม speaker notes ใน `<aside>`
