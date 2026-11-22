@@ -10,3 +10,4 @@
 | `pid.py` | PID Controller |
 | `signs.py` | ตรวจจับและจำแนกป้ายจราจร |
 | `fsm.py` | State Machine ของภารกิจ |
+| `viz.py` | วาด ROI, centroid, กรอบป้าย และ HUD ลงบนภาพ แล้วแสดงใน notebook หรือ stream ไปที่ `http://<IP>:8080` |
