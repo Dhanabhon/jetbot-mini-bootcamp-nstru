@@ -12,7 +12,22 @@ __pycache__/
 *.engine
 *.trt
 
+# เว็บคู่มือ (Jekyll) ที่ build บนเครื่องตัวเอง: GitHub Pages build ให้เองอยู่แล้ว
+docs/_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+vendor/
+.bundle/
+Gemfile.lock
+
 # OS / editor
 .DS_Store
+Thumbs.db
+desktop.ini
 .vscode/
 .idea/
+
+# ไฟล์ตั้งค่าเฉพาะเครื่องของ AI coding tools
+.claude/
+.remember/
