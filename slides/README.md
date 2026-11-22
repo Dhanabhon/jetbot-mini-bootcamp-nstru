@@ -10,3 +10,4 @@ slide ประกอบการสอน แยกไฟล์ตาม module
 - `deck.json` ลำดับสไลด์และ section, `deck.css` สไตล์ที่ใช้ร่วมกัน, `slides/<id>.html` สไลด์ละไฟล์ พร้อม speaker notes ใน `<aside>`
 - ภาพใน `mission.html` อ้างถึง asset ที่อัปโหลดไว้ใน Slides (`/_blob/...`) ไฟล์ต้นฉบับคือ `docs/assets/video/jetbot-mission-poster.jpg`
 - ไฟล์ในโฟลเดอร์นี้เป็นสำเนา ถ้าแก้สไลด์ใน Slides ต้องคัดลอกกลับมาเองให้ตรงกัน
+- ฉบับ PDF (ไม่มี speaker notes) อยู่ที่ `docs/assets/slides/jetbot-mini-bootcamp-lecture.pdf` และดาวน์โหลดได้จากหน้าแรกของเว็บคู่มือ แก้สไลด์แล้วให้สร้างใหม่ด้วย `python3 slides/build_pdf.py` จาก root ของ repo (ต้องมี Google Chrome และ internet)
