@@ -5,7 +5,7 @@ nav_order: 6
 
 # Cheat Sheet
 
-> ร่างโครงไว้ก่อน จะเติมรายละเอียดหลังทดสอบโค้ดกับหุ่นยนต์จริง
+> คำสั่งของกล้อง OLED Buzzer และแบตเตอรี่ยังรอทดสอบกับหุ่นยนต์จริง ดู[คู่มือผู้สอน](instructor-guide.md)
 
 ## เชื่อมต่อ
 
@@ -16,11 +16,20 @@ nav_order: 6
 
 | งาน | โค้ด |
 | :--- | :--- |
-| สั่งมอเตอร์ซ้าย-ขวา | `robot.set_motors(left, right)` |
-| หยุดรถ | _TODO_ |
-| อ่านภาพจากกล้อง | _TODO_ |
-| แสดงข้อความบนจอ OLED | _TODO_ |
-| ส่งเสียง Buzzer | _TODO_ |
+| เปิดรถ | `from jetbot_nstru.hardware import open_robot` แล้ว `robot = open_robot()` |
+| สั่งมอเตอร์ซ้าย-ขวา | `robot.set_motors(left, right)` (ค่า -1.0 ถึง 1.0) |
+| หยุดรถ | `robot.stop()` |
+| อ่านภาพจากกล้อง | `camera = CsiCamera(width=320, height=240)` แล้ว `frame = camera.read()` |
+| ปิดกล้อง (ก่อนเปิด notebook อื่น) | `camera.release()` |
+| แสดงข้อความบนจอ OLED | `!sudo systemctl stop jetbotmini_stats` ครั้งเดียว แล้ว `Oled().show("STOP")` |
+| ส่งเสียง Buzzer | `beep(robot)` (ไม่ block loop) |
+| อ่านแรงดันแบต | `read_battery_voltage()` (เต็ม 12.6 V) |
+| ดูภาพ debug บนเครื่องตัวเอง | `server = MjpegServer().start()` แล้ว `server.push(draw_overlay(frame, VizState(...)))` เปิด `http://<IP>:8080` |
+| โหลด / บันทึกค่าของรถ | `load_params()` / `save_params(kp=0.6)` (ไฟล์ `my_params.json`) |
+
+`CsiCamera`, `Oled`, `beep`, `read_battery_voltage` import จาก `jetbot_nstru.hardware` ส่วน `MjpegServer`, `VizState`, `draw_overlay` อยู่ใน `jetbot_nstru.viz`
+
+ถ้าเปิดกล้องแล้วขึ้น error ว่ากล้องไม่ว่าง แปลว่ามี notebook อื่นถือกล้องอยู่ ให้ Shutdown kernel ของ notebook นั้น หรือรัน `!sudo systemctl restart nvargus-daemon`
 
 ## จูน PID: อาการและวิธีแก้
 

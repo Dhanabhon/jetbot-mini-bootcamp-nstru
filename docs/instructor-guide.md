@@ -94,6 +94,25 @@ nav_order: 7
 - notebook บางเครื่องเห็นว่า Wi-Fi ไม่มี internet แล้วสลับไป Wi-Fi อื่นเอง วิธีแก้อยู่ใน[ขั้นที่ 3](setup/03-wifi.md)
 - เตรียมกระดาษแผ่นใหญ่เขียนชื่อ Wi-Fi และรหัสผ่านติดไว้หน้าห้อง
 
+## ตรวจโค้ดกับหุ่นยนต์จริง
+
+โค้ดใน `jetbot_nstru/hardware.py` เขียนจากเอกสารของ Yahboom และ NVIDIA แต่ยังไม่ได้ทดสอบกับรถจริง จุดที่ติด `VERIFY ON ROBOT` ต้องลองบนรถ 1 คันก่อนวันอบรม:
+
+- [ ] `open_robot()` import `jetbotmini.Robot` ได้ (ถ้าไม่ได้ ดูชื่อ package ใน image ของ Yahboom)
+- [ ] `CsiCamera(lock_exposure=True)` เปิดกล้องได้ ถ้า L4T เก่ากว่า 32.4 จะ fallback ไปใช้ auto exposure และขึ้น warning
+- [ ] `Oled().show("TEST")` แสดงผลหลังหยุด `jetbotmini_stats` แล้ว
+- [ ] `read_battery_voltage()` ได้ค่าใกล้กับที่มิเตอร์วัด (ปรับ `BATTERY_SCALE` ถ้าต่าง)
+- [ ] `beep(robot)` มีเสียง ถ้า `robot` ไม่มี `.buzzer` ให้รัน cell สำหรับผู้สอนใน Module 1 ข้อ 5 เพื่อหาชื่อคำสั่งจริง แล้วแก้ `beep()`
+- [ ] Module 4 วิ่งได้อย่างน้อย 15 FPS พร้อมเปิด stream
+
+## แก้ notebook
+
+notebook ทั้งในโฟลเดอร์ `notebooks/` และ `notebooks/solutions/` สร้างจากไฟล์ต้นฉบับใน `notebooks/src/` อย่าแก้ไฟล์ `.ipynb` โดยตรง:
+
+1. แก้ `notebooks/src/NN_*.py` โค้ดเฉลยอยู่ระหว่าง `# BEGIN SOLUTION: คำใบ้` กับ `# END SOLUTION`
+2. รัน `python3 tools/build_notebooks.py` จะได้ทั้งฉบับผู้เข้าอบรม (ช่องเฉลยกลายเป็น `TODO`) และฉบับเฉลย
+3. รัน `python3 -m pytest tests -q` test จะ fail ถ้าลืม build หรือโค้ดใน notebook มี syntax error
+
 ## การเตรียมสนาม
 
 - ขึงไวนิลให้ตึงเรียบด้วยเทปกาว ลดรอยยับเป็นคลื่น

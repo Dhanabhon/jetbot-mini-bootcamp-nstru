@@ -54,8 +54,11 @@ jetbot-mini-bootcamp-nstru/
 │   ├── cheatsheet.md            # สรุปคำสั่งและวิธีแก้ปัญหาที่เจอบ่อย
 │   └── instructor-guide.md      # checklist และ run-of-show สำหรับผู้สอน
 ├── notebooks/               # notebook สำหรับผู้เข้าอบรม (มีช่อง TODO)
-│   └── solutions/               # เฉลยและ checkpoint ของแต่ละ module
+│   ├── solutions/               # เฉลยและ checkpoint ของแต่ละ module
+│   └── src/                     # ต้นฉบับของ notebook ทั้งสองชุด (ผู้สอนแก้ที่นี่)
 ├── jetbot_nstru/            # โค้ด Python ที่ใช้ร่วมกันหลาย notebook
+├── tests/                   # test ของ jetbot_nstru และ notebook
+├── tools/                   # script สร้าง notebook
 ├── slides/                  # slide ประกอบการสอน
 ├── competition/             # ใบบันทึกคะแนน และแผนผังวางป้าย
 │   └── layouts/

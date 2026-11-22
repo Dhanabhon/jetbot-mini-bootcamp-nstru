@@ -5,6 +5,12 @@ __pycache__/
 
 # Jupyter
 .ipynb_checkpoints/
+.pytest_cache/
+
+# ค่าเฉพาะรถแต่ละคัน และ log การซ้อม
+my_params.json
+my_params.json.tmp
+race_log.csv
 
 # Model ที่เทรนแล้ว และไฟล์ขนาดใหญ่
 *.pth

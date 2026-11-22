@@ -20,7 +20,8 @@ from typing import List, NamedTuple, Optional, Tuple
 import cv2
 import numpy as np
 
-Box = Tuple[int, int, int, int]  # x, y, w, h in full-frame pixels
+from .line import Box
+from .signs import Detection
 
 # BGR
 LINE_ROI_COLOR = (39, 159, 239)
@@ -30,12 +31,6 @@ TEXT_COLOR = (232, 239, 241)
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FONT_SCALE = 0.4
 HUD_ROW_HEIGHT = 16
-
-
-class Detection(NamedTuple):
-    label: str
-    confidence: float
-    box: Box
 
 
 class VizState(NamedTuple):
