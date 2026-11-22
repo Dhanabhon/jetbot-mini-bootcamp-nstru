@@ -31,6 +31,9 @@ YAHBOOM_SERVICES = ("jetbotmini_start", "jetbotmini_stats")  # phone APP + IP di
 STATUS_SERVICE = "nstru_status"
 TIMEZONE = "Asia/Bangkok"
 HOTSPOT_IP = "10.42.0.1"  # NetworkManager's address for a shared (hotspot) connection
+HOTSPOT_CONNECTION = "nstru-hotspot"
+HOTSPOT_PRIORITY = 100
+DRY_RUN_PATTERN = "dryrun-pass{num}"
 MIN_FREE_GB = 2.0
 LOW_BATTERY_V = 11.1
 KEY1_PIN = 8  # BCM numbering, Key1_pin in Yahboom's yahboom-jetbotmini.py
@@ -97,6 +100,32 @@ def parse_ipv4(ip_addr_output: str) -> str:
     """First IPv4 address in `ip -4 -o addr show <dev>` output, or '' when there is none."""
     match = re.search(r"inet (\d+\.\d+\.\d+\.\d+)", ip_addr_output)
     return match.group(1) if match else ""
+
+
+def band_for(channel: int) -> str:
+    """NetworkManager's band name: 'a' is 5 GHz, 'bg' is 2.4 GHz."""
+    return "a" if channel > 14 else "bg"
+
+
+def hotspot_settings(ssid: str, password: str, channel: int) -> list:
+    """(nmcli property, value) pairs for our hotspot, in the order `nmcli -g` reads them back."""
+    return [
+        ("802-11-wireless.ssid", ssid),
+        ("802-11-wireless.mode", "ap"),
+        ("802-11-wireless.band", band_for(channel)),
+        ("802-11-wireless.channel", str(channel)),
+        ("ipv4.method", "shared"),  # NetworkManager runs dnsmasq and hands out 10.42.0.x
+        ("802-11-wireless-security.key-mgmt", "wpa-psk"),
+        ("802-11-wireless-security.psk", password),
+        ("connection.autoconnect", "yes"),
+        # Yahboom's image keeps ~20 saved Wi-Fi networks that also autoconnect; this one must win at boot.
+        ("connection.autoconnect-priority", str(HOTSPOT_PRIORITY)),
+    ]
+
+
+def nmcli_values(output: str) -> list:
+    """Lines of `nmcli -g a,b,c`, with its `\\:` and `\\\\` escapes undone."""
+    return [line.replace("\\:", ":").replace("\\\\", "\\") for line in output.splitlines()]
 
 
 def jupyter_dropin() -> str:
@@ -167,9 +196,10 @@ class Shell(object):
         except OSError:
             return ""
 
-    def run(self, cmd: list, stdin: str = None) -> bool:
-        """Run a command that changes the robot. Returns True on success."""
-        self.say("  $ " + " ".join(cmd))
+    def run(self, cmd: list, stdin: str = None, secret: str = None) -> bool:
+        """Run a command that changes the robot. Returns True on success. `secret` is masked in the log."""
+        shown = " ".join(cmd)
+        self.say("  $ " + (shown.replace(secret, "********") if secret else shown))
         if self.dry_run:
             return True
         proc = subprocess.Popen(cmd, stdin=subprocess.PIPE if stdin is not None else None,
@@ -302,9 +332,79 @@ def step_yahboom_services(sh: Shell) -> bool:
     return ok
 
 
-def step_hotspot(sh: Shell) -> None:
-    sh.say("  ยังไม่เปิดใช้ขั้นนี้: รอผล nmcli และ iw list จากหุ่นจริง จึงยังไม่แก้อะไร")
-    return None
+def other_hotspots(sh: Shell) -> list:
+    """Saved Wi-Fi connections in AP mode other than ours, e.g. Yahboom's `jetbotmini`."""
+    names = []
+    for line in sh.read(["nmcli", "-t", "-f", "NAME,TYPE", "con", "show"]).splitlines():
+        name, _, kind = line.rpartition(":")
+        name = name.replace("\\:", ":")
+        if kind == "802-11-wireless" and name != HOTSPOT_CONNECTION and \
+                sh.read(["nmcli", "-g", "802-11-wireless.mode", "con", "show", name]).strip() == "ap":
+            names.append(name)
+    return names
+
+
+def hotspot_password(sh: Shell, number: int) -> str:
+    pattern = DRY_RUN_PATTERN if sh.dry_run else read_text(HOTSPOT_FILE)
+    if not pattern.strip():
+        raise ValueError("ไม่พบ %s ให้ทีมงานคัดลอกจาก flash drive ก่อน" % HOTSPOT_FILE)
+    return password_for(pattern, number)
+
+
+def bring_up_hotspot(sh: Shell, ssid: str, password: str, channels: list) -> bool:
+    """Write the connection and start it, trying a 2.4 GHz channel if the 5 GHz one will not start."""
+    exists = HOTSPOT_CONNECTION in sh.read(["nmcli", "-g", "NAME", "con", "show"]).splitlines()
+    for channel in channels:
+        args = [x for pair in hotspot_settings(ssid, password, channel) for x in pair]
+        if exists:
+            ok = sh.run(["sudo", "nmcli", "con", "modify", HOTSPOT_CONNECTION] + args, secret=password)
+        else:
+            ok = sh.run(["sudo", "nmcli", "con", "add", "type", "wifi", "ifname", "wlan0",
+                         "con-name", HOTSPOT_CONNECTION] + args, secret=password)
+            exists = exists or ok
+        if ok and sh.run(["sudo", "nmcli", "con", "up", HOTSPOT_CONNECTION]):
+            sh.say("  ✓ เปิด %s ที่ช่อง %d แล้ว" % (ssid, channel))
+            return True
+        sh.say("  ช่อง %d เปิดไม่ได้" % channel)
+    return False
+
+
+def step_hotspot(sh: Shell) -> bool:
+    number = saved_robot_number() or (DRY_RUN_NUMBER if sh.dry_run else 0)
+    if not number:
+        sh.say("  ✗ ยังไม่มีหมายเลขหุ่นยนต์ ให้รันขั้นที่ 2 ก่อน")
+        return False
+    try:
+        password = hotspot_password(sh, number)
+    except ValueError as exc:
+        sh.say("  ✗ " + str(exc))
+        return False
+    iw_list = sh.read(["iw", "list"])
+    if "AP" not in iw_interface_modes(iw_list) and not sh.dry_run:
+        sh.say("  ✗ dongle ตัวนี้เปิด hotspot (AP mode) ไม่ได้ แจ้งทีมงาน")
+        return False
+    ssid = ssid_for(number)
+    channel = pick_channel(number, iw_ap_channels(iw_list))
+    fallback = pick_channel(number, set(CHANNELS_24GHZ))
+
+    for name in other_hotspots(sh):  # keep Yahboom's jetbot-mini from coming back at boot
+        sh.run(["sudo", "nmcli", "con", "modify", name, "connection.autoconnect", "no"])
+
+    keys = ",".join(key for key, _ in hotspot_settings(ssid, password, channel))
+    current = nmcli_values(sh.read(["sudo", "nmcli", "-s", "-g", keys, "con", "show", HOTSPOT_CONNECTION]))
+    active = sh.read(["nmcli", "-g", "GENERAL.STATE", "con", "show", HOTSPOT_CONNECTION]).strip()
+    wanted = [[v for _, v in hotspot_settings(ssid, password, c)] for c in (channel, fallback)]
+    if current in wanted and active == "activated":
+        sh.say("  ✓ %s เปิดอยู่แล้ว ที่ช่อง %s" % (ssid, current[3]))
+        return True
+
+    sh.say("  จะเปิด Wi-Fi %s ที่ช่อง %d หุ่นยนต์จะหลุดจาก Wi-Fi ที่ต่ออยู่ตอนนี้" % (ssid, channel))
+    if not sh.confirm("  เริ่มเลยไหม"):
+        return None
+    if not bring_up_hotspot(sh, ssid, password, [channel] + ([fallback] if fallback != channel else [])):
+        return False
+    sh.say("  ให้ notebook ต่อ Wi-Fi %s แล้วเปิด http://%s:8888" % (ssid, HOTSPOT_IP))
+    return True
 
 
 def step_power_mode(sh: Shell) -> bool:
@@ -446,7 +546,8 @@ STEPS = (
     (2, "ตั้งชื่อหุ่นยนต์", "ชื่อเครื่องในเครือข่าย ใช้หมายเลขจากสติ๊กเกอร์ เช่น jetbot-07", step_hostname, False),
     (3, "ตั้งเวลา", "นาฬิกาของระบบใช้ตั้งชื่อไฟล์และบันทึก log", step_time, False),
     (4, "ปิดโปรแกรมของ Yahboom", "โปรแกรม APP มือถือแย่งมอเตอร์และกล้องกับโค้ดของเรา", step_yahboom_services, False),
-    (5, "Hotspot ของหุ่นยนต์", "notebook จะต่อ Wi-Fi ของหุ่นยนต์ตัวเองโดยตรง", step_hotspot, False),
+    (5, "Hotspot ของหุ่นยนต์", "notebook จะต่อ Wi-Fi ของหุ่นยนต์ตัวเองโดยตรง ที่อยู่ของหุ่นจึงเป็น 10.42.0.1 เสมอ",
+     step_hotspot, False),
     (6, "Power mode", "MAXN ใช้ CPU ครบ 4 core งาน vision จึงเร็วขึ้น", step_power_mode, False),
     (7, "Jupyter Lab", "ให้ Jupyter เปิดที่ folder ของ bootcamp", step_jupyter, False),
     (8, "จอ OLED และเสียงตอน boot", "แสดงชื่อ Wi-Fi รหัส และแบต และส่งเสียง 3 ครั้งเมื่อ boot เสร็จ",

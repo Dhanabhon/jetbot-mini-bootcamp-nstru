@@ -222,7 +222,7 @@ python3 tools/robot_setup.py
 | 2 | ถามหมายเลขหุ่นยนต์ ตั้ง hostname เป็น `jetbot-NN` และแก้ `/etc/hosts` แล้วบันทึกหมายเลขไว้ที่ `~/.jetbot-nstru/robot.conf` |
 | 3 | ตั้งเขตเวลาเป็น Asia/Bangkok และตั้งวันเวลาใหม่ถ้าผิด |
 | 4 | ปิด `jetbotmini_start` (APP มือถือ) และ `jetbotmini_stats` (OLED ที่ crash เมื่อไม่มี `wlan0`) ถาวร |
-| 5 | hotspot ของหุ่นยนต์แต่ละตัว **ยังไม่เปิดใช้** ขั้นนี้ยังไม่แก้อะไร |
+| 5 | ปิดการเปิดอัตโนมัติของ hotspot `jetbotmini` เดิม แล้วสร้าง connection `nstru-hotspot` ชื่อ Wi-Fi `JETBOT-NN` รหัสจาก[ไฟล์รหัส](#hotspot-conf) ที่อยู่ `10.42.0.1` เลือกช่อง 5 GHz ถ้า dongle เปิด AP ที่นั่นได้ ถ้าเปิดไม่ขึ้นจะลองช่อง 1/6/11 แทน **ยังไม่ได้ทดสอบบนหุ่นจริง** |
 | 6 | ตั้ง power mode เป็น MAXN |
 | 7 | ให้ Jupyter เปิดที่ folder ของ repo โดยเขียน systemd drop-in ไว้ที่ `/etc/systemd/system/<service>.service.d/nstru.conf` ถ้าจะย้อนกลับ ให้ลบไฟล์นี้แล้วสั่ง `sudo systemctl daemon-reload` |
 | 8 | ติดตั้ง service `nstru_status`: Buzzer ดัง 3 ครั้งเมื่อ boot เสร็จ และจอ OLED แสดงชื่อ Wi-Fi รหัส IP และแบต |
@@ -246,7 +246,9 @@ cp /media/jetson/<ชื่อ drive>/hotspot.conf ~/.jetbot-nstru/
 chmod 600 ~/.jetbot-nstru/hotspot.conf
 ```
 
-จอ OLED จะแสดงรหัสก็ต่อเมื่อหุ่นยนต์ปล่อย Wi-Fi ชื่อ `JETBOT-NN` ของตัวเองอยู่ ซึ่งต้องรอให้ขั้นที่ 5 ใช้งานได้ก่อน
+จอ OLED จะแสดงรหัสก็ต่อเมื่อหุ่นยนต์ปล่อย Wi-Fi ชื่อ `JETBOT-NN` ของตัวเองอยู่ ขั้นที่ 5 ไม่แสดงรหัสในหน้าจอ Terminal และใน log
+
+image ของ Yahboom จำ Wi-Fi ไว้ราว 20 วง ทุกวงตั้งให้ต่ออัตโนมัติ ขั้นที่ 5 ไม่ลบวงเหล่านี้ แต่ตั้ง `nstru-hotspot` ให้มี priority สูงกว่า (100) ตอน boot หุ่นจึงเปิด hotspot ก่อน ถ้าทีมงานต้องการให้หุ่นต่อ internet ชั่วคราว เช่น เพื่อ `git pull` ให้สั่ง `nmcli con up "<ชื่อ Wi-Fi>"` แล้วสั่ง `nmcli con up nstru-hotspot` เพื่อกลับมาเป็น hotspot
 
 ## ตรวจโค้ดกับหุ่นยนต์จริง
 

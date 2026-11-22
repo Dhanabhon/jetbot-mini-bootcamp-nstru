@@ -101,6 +101,21 @@ def test_iw_ssid_and_ipv4_parsing():
     assert setup.parse_ipv4("") == ""
 
 
+def test_hotspot_settings_pick_the_band_from_the_channel():
+    settings = dict(setup.hotspot_settings("JETBOT-07", "secret07", 36))
+    assert settings["802-11-wireless.band"] == "a"
+    assert settings["802-11-wireless.mode"] == "ap"
+    assert settings["ipv4.method"] == "shared"
+    assert int(settings["connection.autoconnect-priority"]) > 0  # beats Yahboom's saved networks at boot
+    assert dict(setup.hotspot_settings("JETBOT-07", "secret07", 6))["802-11-wireless.band"] == "bg"
+
+
+def test_nmcli_values_round_trip_the_settings_nmcli_prints_back():
+    printed = "JETBOT-07\nap\na\n36\nshared\nwpa-psk\npass\\:07\\\\x\nyes\n100\n"
+    expected = [v for _, v in setup.hotspot_settings("JETBOT-07", "pass:07\\x", 36)]
+    assert setup.nmcli_values(printed) == expected
+
+
 def test_oled_lines_say_what_is_missing():
     assert status_display.status_lines("JETBOT-07", "pw", "10.42.0.1", True, 11.84) == [
         "JETBOT-07", "PW pw", "10.42.0.1:8888", "BAT 11.8V"]
@@ -131,4 +146,6 @@ def test_dry_run_runs_every_step_without_sudo(tmp_path, monkeypatch, capsys):
         assert "ขั้น %d:" % number in out
     assert "$ sudo hostnamectl set-hostname jetbot-07" in out
     assert "nstru_status" in out
+    assert "con-name nstru-hotspot" in out and "802-11-wireless.ssid JETBOT-07" in out
+    assert "dryrun-pass07" not in out  # the password is masked in the screen and the log
     assert not os.path.exists(setup.ROBOT_FILE)
