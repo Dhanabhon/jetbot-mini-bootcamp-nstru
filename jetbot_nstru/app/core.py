@@ -125,6 +125,11 @@ class Panel:
     def halt(self, message):
         """Stop whatever drives the motors and say why. Called from either thread; must be cheap."""
 
+    def page_optional(self):
+        """True while the panel may drive with no control page open (only a run started from a button on the
+        robot, which the same button stops). Everything else stops when the page goes quiet."""
+        return False
+
 
 class App:
     """Routes the page's requests to panels and runs the active panel each frame, with the safety stops."""
@@ -171,6 +176,7 @@ class App:
         with self._lock:
             panel = self.panels[self.active]
             quiet = now - self._last_seen > HEARTBEAT_TIMEOUT
+        quiet = quiet and not panel.page_optional()
         if quiet:
             panel.halt("หยุดเพราะหน้าเว็บขาดการเชื่อมต่อ")
         picture, motors = panel.step(frame, now, fps)

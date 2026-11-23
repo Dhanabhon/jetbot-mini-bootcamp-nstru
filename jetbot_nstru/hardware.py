@@ -163,3 +163,23 @@ def beep(robot=None, duration: float = 0.1) -> bool:
         return False
     threading.Timer(duration, set_buzzer, (False,)).start()
     return True
+
+
+KEY1_PIN = 8  # BCM numbering, Key1_pin in Yahboom's yahboom-jetbotmini.py (tools/robot_setup.py checks it works)
+
+
+class Key1:
+    """KEY1 on the expansion board. Yahboom's code does not say which level means pressed, so the level read
+    when this opens counts as "up" and any change from it as "down". Do not hold the key while the program starts."""
+
+    def __init__(self, pin: int = KEY1_PIN):
+        import RPi.GPIO as GPIO  # Jetson.GPIO installs under this name, as Yahboom's app uses it
+
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(pin, GPIO.IN)
+        self._gpio, self._pin = GPIO, pin
+        self._idle = GPIO.input(pin)
+
+    def pressed(self) -> bool:
+        return self._gpio.input(self._pin) != self._idle

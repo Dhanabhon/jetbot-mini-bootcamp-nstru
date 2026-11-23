@@ -131,8 +131,9 @@ function render(s) {
   $("tab").textContent = "แท็บที่เปิด: " + s.active;
   $("oled").textContent = s.oled || "—";
   $("c_batt").textContent = s.battery == null ? "แบต —" : "แบต " + s.battery.toFixed(2) + " V";
-  $("c_conn").textContent = s.connected ? "หน้าควบคุมเปิดอยู่" : "หน้าควบคุมปิด รถไม่วิ่ง";
-  $("c_conn").className = s.connected ? "" : "off";
+  const keyRun = !s.connected && s.mission && s.mission.running;  // only a KEY1 run drives with no control page
+  $("c_conn").textContent = s.connected ? "หน้าควบคุมเปิดอยู่" : keyRun ? "วิ่งด้วยปุ่ม KEY1" : "หน้าควบคุมปิด รถไม่วิ่ง";
+  $("c_conn").className = s.connected || keyRun ? "" : "off";
   const m = s.mission;
   $("status").textContent = describe(m);
   if (!m) { $("c_mode").textContent = "ไม่มีภารกิจ"; return; }
