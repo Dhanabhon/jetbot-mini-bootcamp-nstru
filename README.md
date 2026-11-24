@@ -47,7 +47,7 @@ Notebook ทุกไฟล์เป็นแบบเติมโค้ดใ�
 
 ## ใช้ต่อหลังอบรม
 
-`jetbot_app.py` รวมทุก module เป็นแท็บในหน้าเว็บเดียว ตั้งแต่ตรวจเครื่อง trim จูนเส้น PID อ่านป้าย จนถึงรันทั้งภารกิจ ไม่ต้องเปิด notebook ทีละไฟล์ ปิด kernel ของ notebook ทุกตัวก่อน แล้วสั่งใน Terminal ของหุ่นยนต์
+`jetbot_app.py` รวมทุก module เป็นแท็บในหน้าเว็บเดียว ตั้งแต่ตรวจเครื่อง trim จูนเส้น PID อ่านป้าย (ทั้ง OpenCV และ CNN ที่เทรนบนรถ) จนถึงรันทั้งภารกิจ ไม่ต้องเปิด notebook ทีละไฟล์ ปิด kernel ของ notebook ทุกตัวก่อน แล้วสั่งใน Terminal ของหุ่นยนต์
 
 ```bash
 cd ~/jetbot-mini-bootcamp-nstru
@@ -83,6 +83,7 @@ jetbot-mini-bootcamp-nstru/
 ├── competition/             # ใบบันทึกคะแนน และแผนผังวางป้าย
 │   └── layouts/
 ├── dataset/signs/           # ภาพป้ายที่ถ่ายจากกล้องหุ่นยนต์จริง
+├── models/                  # weights ตั้งต้นของ ResNet18 และ model ที่เทรนจากแท็บ CNN (ไม่ถูก commit)
 ├── 3d_models/               # ไฟล์ .stl เสาป้ายจราจร
 └── stickers/                # ไฟล์ภาพป้ายสำหรับพิมพ์สติ๊กเกอร์
 ```

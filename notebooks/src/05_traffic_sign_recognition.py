@@ -197,6 +197,7 @@ for index, reading in enumerate(readings):
 # (ภาพและไฟล์ model ไม่ถูก commit ขึ้น git ตาม `.gitignore`)
 #
 # ถ้าจะเก็บภาพเยอะ ๆ ใช้ `solutions/05_sign_viewer.py` สะดวกกว่า: ถือรถแล้วกดปุ่มตัวเลขบนคีย์บอร์ดถ่ายได้เลย
+# ส่วน `solutions/05_sign_cnn.py` ทำครบในหน้าเว็บ: เก็บภาพ เทรน ResNet18 บนรถด้วยปุ่มเดียว แล้วทดสอบอ่านป้ายสด
 
 # %%
 import uuid

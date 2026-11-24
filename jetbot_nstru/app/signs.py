@@ -15,10 +15,10 @@ NAMES = tuple(label.lower() for label in LABELS)  # folder names, same as the no
 MASKS = ("none", "blue", "red", "white")
 
 
-def count_images(dataset_dir):
+def count_images(dataset_dir, names=NAMES):
     """Number of .jpg files saved for each sign."""
     counts = {}
-    for name in NAMES:
+    for name in names:
         folder = os.path.join(dataset_dir, name)
         counts[name] = len([f for f in os.listdir(folder) if f.endswith(".jpg")]) if os.path.isdir(folder) else 0
     return counts
@@ -27,10 +27,11 @@ def count_images(dataset_dir):
 class Viewer:
     """Latest camera frame and the page's choices, shared between the web server thread and the camera loop."""
 
-    def __init__(self, dataset_dir=DATASET_DIR):
+    def __init__(self, dataset_dir=DATASET_DIR, names=NAMES):
         self.dataset_dir = dataset_dir
+        self.names = names
         self.mask = "none"
-        self.counts = count_images(dataset_dir)
+        self.counts = count_images(dataset_dir, names)
         self._frame = None
         self._lock = threading.Lock()
 
@@ -59,8 +60,8 @@ class Viewer:
         return None
 
     def _snap(self, label):
-        if label not in NAMES:
-            raise ValueError("label must be one of {}".format(NAMES))
+        if label not in self.names:
+            raise ValueError("label must be one of {}".format(self.names))
         reply = self.state()
         if self._frame is None:
             reply.update(saved=False, message="ยังไม่มีภาพจากกล้อง")

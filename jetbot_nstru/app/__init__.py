@@ -7,6 +7,7 @@
 from collections import OrderedDict
 
 from .check import CheckPanel
+from .cnn import CnnPanel
 from .core import App, Context, Panel, TimedDrive, build_page, run
 from .line import LinePanel
 from .mission import MissionPanel
@@ -16,7 +17,7 @@ from .trim import TrimPanel
 
 # Tab order on the page. Add your own Panel subclass here to give it a tab.
 PANEL_TYPES = OrderedDict((cls.name, cls) for cls in (
-    CheckPanel, TrimPanel, LinePanel, PidPanel, SignPanel, MissionPanel))
+    CheckPanel, TrimPanel, LinePanel, PidPanel, SignPanel, CnnPanel, MissionPanel))
 
 
 def run_app(names=None, title="JetBot NSTRU", argv=None, options=None):
